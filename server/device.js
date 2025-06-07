@@ -17,7 +17,9 @@ async function postMeasure(request) {
 
 async function getLatestMeasure(request) {
 	const {device} = request.params
-	return readLatestMeasure(device)
+	const record = readLatestMeasure(device)
+	record.measure = JSON.parse(record.measure)
+	return record
 }
 
 async function putConfig(request) {
@@ -28,6 +30,7 @@ async function putConfig(request) {
 
 async function getConfig(request) {
 	const {device} = request.params
-	return readConfig(device)
+	const record = readConfig(device)
+	return JSON.parse(record.config)
 }
 

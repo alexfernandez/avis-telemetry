@@ -9,14 +9,14 @@ function init() {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
 		measure: 'JSON NOT NULL',
-		createdAt: 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
-		takenAt: 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
+		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
+		takenAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 	createTable('configs', {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
-		measure: 'JSON NOT NULL',
-		createdAt: 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
+		config: 'JSON NOT NULL',
+		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 }
 
@@ -43,10 +43,10 @@ export function storeConfig(device, config) {
 		device,
 		config: JSON.stringify(config),
 	}
-	return insertRegister('config', data)
+	return insertRegister('configs', data)
 }
 
 export function readConfig(device) {
-	return findLatest('config', {'device = ?': device}, 'createdAt DESC')
+	return findLatest('configs', {'device = ?': device}, 'createdAt DESC')
 }
 
