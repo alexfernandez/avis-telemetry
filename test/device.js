@@ -1,7 +1,7 @@
 import {randomUUID} from 'crypto'
 import {app, userAgent} from './setup.js'
 
-const deviceId = randomUUID()
+const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 
 
 async function testMeasures() {

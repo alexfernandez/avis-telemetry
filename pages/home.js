@@ -18,8 +18,8 @@ export function createHome(latestDevices) {
 		<table>
 			<thead>
 				<tr>
-				<th>Site</th>
-				<th>Page views</th>
+				<th>Devices</th>
+				<th>Measures</th>
 				</tr>
 			</thead>
 			<tbody>
