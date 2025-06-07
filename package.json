@@ -1,0 +1,27 @@
+{
+  "name": "avis-telemetry",
+  "version": "0.0.1",
+  "description": "Telemetry for the avis aeterna project",
+  "main": "index.js",
+  "scripts": {
+    "test": "node test/all.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexfernandez/avis-telemetry.git"
+  },
+  "keywords": [
+    "telemetry",
+    "esp32",
+    "drone"
+  ],
+  "author": "Alex Fernández <alexfernandeznpm@gmail.com>",
+  "license": "GPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/alexfernandez/avis-telemetry/issues"
+  },
+  "homepage": "https://github.com/alexfernandez/avis-telemetry#readme",
+  "dependencies": {
+    "fastify": "^5.3.3"
+  }
+}
