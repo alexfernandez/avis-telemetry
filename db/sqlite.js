@@ -1,6 +1,4 @@
 import Database from 'better-sqlite3'
-import randomUUID from 'crypto'
-
 
 const db = initDb()
 
@@ -12,40 +10,15 @@ function initDb() {
 	return db
 }
 
-export function createTables() {
-	const measureFields = {
-		id: 'TEXT PRIMARY KEY',
-		device: 'TEXT NOT NULL',
-		measure: 'JSON NOT NULL',
-		createdAt: 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
-		takenAt: 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
-	}
-	createTable('measures', measureFields)
-	const configFields = {
-		id: 'TEXT PRIMARY KEY',
-		device: 'TEXT NOT NULL',
-		measure: 'JSON NOT NULL',
-		createdAt: 'DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP',
-	}
-	createTable('configs', configFields)
-}
-
-function createTable(table, fields) {
+export function createTable(table, fields) {
 	const defs = [Object.keys(fields).map(key => `'${key}' ${fields[key]}`)]
 	const createTable = `CREATE TABLE IF NOT EXISTS ${table} (${defs})`
-	console.log(createTable)
 	db.exec(createTable)
 }
 
-export function insertMeasure(device, measure, takenAt) {
-	const data = {
-		id: randomUUID(),
-		device,
-		measure,
-		takenAt,
-	}
-	const insert = generateInsert('measures', data)
-	db.prepare(insert).run(Object.values(data))
+export function insertRegister(table, data) {
+	const insert = generateInsert(table, Object.keys(data))
+	db.prepare(insert).run(data)
 }
 
 function generateInsert(table, keys) {
@@ -53,21 +26,15 @@ function generateInsert(table, keys) {
 	return `INSERT INTO ${table} (${keys.join(', ')}) VALUES (${placeholders.join(', ')})`
 }
 
-export function findLatestMeasure(device) {
-	const select = getSelect('measures', [`device = ?`], 'takenAt DESC')
-	const results = db.prepare(select).get([device])
+export function findLatest(table, where, order) {
+	const select = getSelect(table, Object.keys(where), order)
+	const results = db.prepare(select).get(Object.values(where))
 	return results
 }
 
 function getSelect(table, where, order) {
 	const orderClause = order ? `ORDER BY ${order}` : ''
 	return `SELECT * FROM ${table} WHERE ${where.join(' AND ')} ${orderClause}`
-}
-
-export function findConfig(device) {
-	const select = getSelect('measures', [`device = ?`], 'createdAt DESC')
-	const results = db.prepare(select).get([device])
-	return results
 }
 
 export function findGrouped(table, conditions, group, limit = 10) {

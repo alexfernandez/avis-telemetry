@@ -1,11 +1,6 @@
-import {createTables, findGrouped} from './sqlite.js'
+import {findGrouped} from './sqlite.js'
+import {} from './device.js'
 
-
-init()
-
-function init() {
-	createTables()
-}
 
 export function readLatestDevices() {
 	const day = getDay()
