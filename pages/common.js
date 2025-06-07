@@ -9,11 +9,6 @@ export function createHead(title) {
 	<title>${title}</title>
 	<link rel="shortcut icon" href="/favicon.png">
 	<link rel="stylesheet" href="/main.css">
-	<script src="https://librecounter.org/js/chart.js"></script>
-	<script src="https://librecounter.org/js/chartjs-plugin-datalabels@2.js"></script>
-	<script>
-	${configureChartJs()}
-	</script>
 </head>
 <body>
 `
@@ -22,30 +17,15 @@ export function createHead(title) {
 export function createFooter() {
 	return `
 	<footer>
-		© 2024 <a href="https://pinchito.es/">Alex "pinchito" Fernández</a> and <a href="https://github.com/alexfernandez/librecounter/graphs/contributors">contributors</a>.
+		© 2024 <a href="https://pinchito.es/">Alex "pinchito" Fernández</a> and <a href="https://github.com/alexfernandez/avis-telemetry/graphs/contributors">contributors</a>.
 		<br />
-		Visual identity and "eye of Horus" logo contributed by <a href="https://fullcircle.es/">Fullcircle</a>.
-		<br />
-		See <a href="https://github.com/alexfernandez/librecounter/">project details</a>.
+		See <a href="https://github.com/alexfernandez/avis-telemetry/">project details</a>.
+		<a href="https://librecounter.org/referer/show" target="_blank">
+<img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
+</a>
 	</footer>
 
 </body>
 </html>`
-}
-
-function configureChartJs() {
-	return `Chart.register(ChartDataLabels)
-	const plugin = {
-		id: 'background',
-		beforeDraw: (chart, args, opts) => {
-			if (!opts.color) {
-				return;
-			}
-			const {ctx, chartArea} = chart;
-			ctx.fillStyle = opts.color;
-			ctx.fillRect(chartArea.left, chartArea.top, chartArea.width, chartArea.height)
-		}
-	}
-	Chart.register(plugin)`
 }
 

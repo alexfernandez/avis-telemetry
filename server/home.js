@@ -1,5 +1,5 @@
 import {readLatestDevices} from '../db/stats.js'
-import {createHome} from '../page/home.js'
+import {createHome} from '../pages/home.js'
 
 
 export default async function setup(app) {
