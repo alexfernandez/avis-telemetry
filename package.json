@@ -5,6 +5,8 @@
   "description": "Telemetry for the avis aeterna project",
   "main": "bin/start.js",
   "scripts": {
+    "start": "node bin/start.js",
+    "dev": "supervisor bin/start.js",
     "test": "node bin/test.js"
   },
   "repository": {
@@ -25,5 +27,8 @@
   "dependencies": {
     "better-sqlite3": "^11.10.0",
     "fastify": "^5.3.3"
+  },
+  "devDependencies": {
+    "supervisor": "^0.12.0"
   }
 }

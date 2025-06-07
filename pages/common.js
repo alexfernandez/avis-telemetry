@@ -17,9 +17,11 @@ export function createHead(title) {
 export function createFooter() {
 	return `
 	<footer>
-		© 2024 <a href="https://pinchito.es/">Alex "pinchito" Fernández</a> and <a href="https://github.com/alexfernandez/avis-telemetry/graphs/contributors">contributors</a>.
-		<br />
-		See <a href="https://github.com/alexfernandez/avis-telemetry/">project details</a>.
+		<p>
+			© 2024 <a href="https://pinchito.es/">Alex "pinchito" Fernández</a> and <a href="https://github.com/alexfernandez/avis-telemetry/graphs/contributors">contributors</a>.
+			<br />
+			See <a href="https://github.com/alexfernandez/avis-telemetry/">project details</a>.
+		</p>
 		<a href="https://librecounter.org/referer/show" target="_blank">
 <img src="https://librecounter.org/counter.svg" referrerPolicy="unsafe-url" />
 </a>

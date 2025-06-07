@@ -31,10 +31,11 @@ export function createHome(latestDevices) {
 		Send your data to the API endpoint:
 		</p>
 		<code>
-		POST https://avistel.es/device/[deviceId]/add
+		POST https://avistel.es/device/[deviceId]/measures
 		</code>
 		<p>
 		Add your telemetry data to the body as a simple key-value JSON:
+		</p>
 		<code>
 		{"height": 5, "name": "my-rover", "takenAt": "2025-06-07T19:02:57Z"}
 		</code>
