@@ -130,6 +130,32 @@ async function testMeasuresAfterDelay() {
 	console.assert(result4.measure.numeric == measure2.numeric, 'should have new text value')
 }
 
+async function testMeasureWithoutTakenAt() {
+	const measure = {
+		text: 'without taken at',
+		numeric: 13,
+	}
+	const response3 = await app.inject({
+		url: `/devices/${deviceId}/measures`,
+		method: 'POST',
+		headers: {'user-agent': userAgent},
+		body: measure,
+	})
+	console.assert(response3.statusCode == 200, `could not post without taken at`)
+	console.assert(response3.json().ok, 'should post without taken at')
+	const response4 = await app.inject({
+		url: `/devices/${deviceId}/measures/latest`,
+		method: 'GET',
+		headers: {'user-agent': userAgent},
+	})
+	console.assert(response4.statusCode == 200, `could not get latest measure again`)
+	const result4 = response4.json()
+	console.assert(result4, 'should have result again')
+	console.assert(result4.measure, 'should have measure again')
+	console.assert(result4.measure.text != measure.text, 'should not have text value without taken at')
+	console.assert(result4.measure.numeric != measure.numeric, 'should not have text value without taken at')
+}
+
 async function testConfigAfterDelay() {
 	const config2 = {
 		lever: 'new',

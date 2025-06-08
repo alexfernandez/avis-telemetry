@@ -31,7 +31,9 @@ export function storeMeasure(device, measure, takenAt) {
 		id: randomUUID(),
 		device,
 		measure: serialize(measure),
-		takenAt,
+	}
+	if (takenAt) {
+		message.takenAt = takenAt
 	}
 	return insertRegister('measures', message)
 }
