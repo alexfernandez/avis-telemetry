@@ -16,9 +16,9 @@ export function createTable(table, fields) {
 	db.exec(createTable)
 }
 
-export function insertRegister(table, data) {
-	const insert = generateInsert(table, Object.keys(data))
-	db.prepare(insert).run(data)
+export function insertRegister(table, message) {
+	const insert = generateInsert(table, Object.keys(message))
+	db.prepare(insert).run(message)
 }
 
 function generateInsert(table, keys) {

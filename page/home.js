@@ -4,6 +4,9 @@ import {createHead, createFooter} from './common.js'
 export function createHome(latestDevices) {
 	return `${createHead('Avis Telemetry')}
 	<header>
+		<div class="logo">
+		    <a href="/" class="imageLink"><img src="/logo.svg" alt="Avis telemetry logo" /></a>
+        </div>
 		<h1 class="title">
 		Telemetry for your Devices
 		</h1>
@@ -28,13 +31,13 @@ export function createHome(latestDevices) {
 		</table>
 		<h2>How to Use</h2>
 		<p>
-		Send your data to the API endpoint:
+		Send your measures to the API endpoint:
 		</p>
 		<code>
 		POST https://avistel.es/device/[deviceId]/measures
 		</code>
 		<p>
-		Add your telemetry data to the body as a simple key-value JSON:
+		Add your telemetry measures to the body as a simple key-value JSON:
 		</p>
 		<code>
 		{"height": 5, "name": "my-rover", "takenAt": "2025-06-07T19:02:57Z"}

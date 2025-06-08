@@ -1,6 +1,11 @@
 import {randomUUID} from 'crypto'
 import {createTable, insertRegister, findLatest} from './sqlite.js'
 
+const sizeLimit = 8 * 1024
+const latestMeasure = new Map()
+const latestConfig = new Map()
+const minDelayMs = 500
+const maxDeviceLength = 256
 init()
 
 
@@ -20,17 +25,43 @@ function init() {
 	})
 }
 
-export function createTables() {
-}
-
 export function storeMeasure(device, measure, takenAt) {
-	const data = {
+	checkMeasure(device)
+	const message = {
 		id: randomUUID(),
 		device,
-		measure: JSON.stringify(measure),
+		measure: serialize(measure),
 		takenAt,
 	}
-	return insertRegister('measures', data)
+	return insertRegister('measures', message)
+}
+
+function checkMeasure(device) {
+	checkLatest(device, latestMeasure)
+}
+
+function checkLatest(device, map) {
+	if (!device) {
+		throw new Error('Missing device code')
+	}
+	if (device.length >= maxDeviceLength) {
+		throw new Error(`Device code too long, should be under ${maxDeviceLength} characters`)
+	}
+	const nowMs = Date.now()
+	const latestMs = map.get(device)
+	const diffMs = nowMs - latestMs
+	if (nowMs - latestMs < minDelayMs) {
+		throw new Error(`Delay between writes ${diffMs} ms was too short; should be at least ${minDelayMs} ms`)
+	}
+	map.set(device, nowMs)
+}
+
+function serialize(measure) {
+	const serialized = JSON.stringify(measure)
+	if (serialized.length > sizeLimit) {
+		throw new Error(`Size ${serialized.length} is above the current limit of ${sizeLimit}`)
+	}
+	return serialized
 }
 
 export function readLatestMeasure(device) {
@@ -38,12 +69,17 @@ export function readLatestMeasure(device) {
 }
 
 export function storeConfig(device, config) {
-	const data = {
+	checkConfig(device)
+	const message = {
 		id: randomUUID(),
 		device,
-		config: JSON.stringify(config),
+		config: serialize(config),
 	}
-	return insertRegister('configs', data)
+	return insertRegister('configs', message)
+}
+
+function checkConfig(device) {
+	checkLatest(device, latestConfig)
 }
 
 export function readConfig(device) {

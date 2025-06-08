@@ -1,6 +1,6 @@
 {
   "name": "avis-telemetry",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Telemetry for the avis aeterna project",
   "main": "bin/start.js",
@@ -29,6 +29,7 @@
     "fastify": "^5.3.3"
   },
   "devDependencies": {
+    "stdio": "^2.1.3",
     "supervisor": "^0.12.0"
   }
 }
