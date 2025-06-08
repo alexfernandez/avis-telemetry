@@ -36,7 +36,7 @@ export function createHome(latestDevices) {
 		Send your measures to the API endpoint:
 		</p>
 		<code>
-		POST https://avistel.es/device/[deviceId]/measures
+		POST https://avistel.es/devices/[deviceId]/measures
 		</code>
 		<p>
 		Add your telemetry measures to the body as a simple key-value JSON:
