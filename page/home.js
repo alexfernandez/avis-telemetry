@@ -4,6 +4,9 @@ import {createHead, createFooter} from './common.js'
 export function createHome(latestDevices) {
 	return `${createHead('Avis Telemetry')}
 	<header>
+		<div class="logo">
+		    <a href="/" class="imageLink"><img src="/logo.svg" alt="Avis telemetry logo" /></a>
+        </div>
 		<h1 class="title">
 		Telemetry for your Devices
 		</h1>
