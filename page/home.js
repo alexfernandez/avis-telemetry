@@ -5,18 +5,20 @@ export function createHome(latestDevices) {
 	return `${createHead('Avis Telemetry')}
 	<header>
 		<div class="logo">
-		    <a href="/" class="imageLink"><img src="/logo.svg" alt="Avis telemetry logo" /></a>
+			<h1>
+		    <a href="/" class="imageLink"><img src="/logo.svg" alt="Avis telemetry logo" /></a> Avis Telemetry
+			</h1>
         </div>
-		<h1 class="title">
+	</header>
+	<article>
+		<h2 class="title">
 		Telemetry for your Devices
-		</h1>
+		</h2>
 		<p>
 		Free, <a href="https://github.com/alexfernandez/avis-telemetry/">libre, open source</a>
 		telemetry for your devices.
 		No installation or configuration required.
 		</p>
-	</header>
-	<article>
 		<h2>Top Devices Today</h2>
 		<table>
 			<thead>
@@ -34,7 +36,7 @@ export function createHome(latestDevices) {
 		Send your measures to the API endpoint:
 		</p>
 		<code>
-		POST https://avistel.es/device/[deviceId]/measures
+		POST https://avistel.es/devices/[deviceId]/measures
 		</code>
 		<p>
 		Add your telemetry measures to the body as a simple key-value JSON:
@@ -56,7 +58,7 @@ function createRows(devices) {
 	for (const {device, total} of devices) {
 		const row = `		<tr>
 			<td>${device}</td>
-			<td>${total}</td>
+			<td class="numeric">${total}</td>
 		</tr>`
 		rows.push(row)
 	}

@@ -2,6 +2,13 @@
 
 Versions for avis-telemetry.
 
+### 0.3.0: 2025-06-09
+
+* Accept measures without takenAt.
+* For latest measures, order by takenAt or createdAt.
+* Shorter tests (200 ms vs 500 ms delays).
+* Improved CSS for website.
+
 ### 0.2.0: 2025-06-08
 
 * Add 500 ms minimum delay between measures and configs.
