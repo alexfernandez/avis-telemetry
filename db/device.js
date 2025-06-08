@@ -27,13 +27,13 @@ function init() {
 
 export function storeMeasure(device, measure, takenAt) {
 	checkMeasure(device)
-	const data = {
+	const message = {
 		id: randomUUID(),
 		device,
 		measure: serialize(measure),
 		takenAt,
 	}
-	return insertRegister('measures', data)
+	return insertRegister('measures', message)
 }
 
 function checkMeasure(device) {
@@ -70,12 +70,12 @@ export function readLatestMeasure(device) {
 
 export function storeConfig(device, config) {
 	checkConfig(device)
-	const data = {
+	const message = {
 		id: randomUUID(),
 		device,
 		config: serialize(config),
 	}
-	return insertRegister('configs', data)
+	return insertRegister('configs', message)
 }
 
 function checkConfig(device) {
