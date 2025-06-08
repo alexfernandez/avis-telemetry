@@ -20,9 +20,6 @@ function init() {
 	})
 }
 
-export function createTables() {
-}
-
 export function storeMeasure(device, measure, takenAt) {
 	const data = {
 		id: randomUUID(),
