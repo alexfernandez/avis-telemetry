@@ -1,12 +1,13 @@
 import {randomUUID} from 'crypto'
 import {app, userAgent} from './setup.js'
 import {sleepMs} from '../core/sleep.js'
+import config from '../core/config.js'
 
 const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 const altDeviceId = `test-device-${randomUUID().substring(0, 8)}`
 
 
-async function testMeasures() {
+async function testMeasure() {
 	const measure1 = {
 		text: 'value',
 		numeric: 87,
@@ -103,7 +104,7 @@ async function testInvalidCalls() {
 	console.assert(response3.statusCode == 400, `should not put config before delay`)
 }
 
-async function testMeasuresAfterDelay() {
+async function testMeasureAfterDelay() {
 	const measure2 = {
 		text: 'different',
 		numeric: 78,
@@ -185,11 +186,14 @@ async function testConfigAfterDelay() {
 }
 
 export default async function test() {
-	await testMeasures()
+	config.minDelayMs = 100
+	await testMeasure()
 	await testConfig()
 	await testInvalidCalls()
-	await sleepMs(501)
-	await testMeasuresAfterDelay()
+	await sleepMs(config.minDelayMs + 1)
+	await testMeasureAfterDelay()
+	await sleepMs(config.minDelayMs + 1)
+	await testMeasureWithoutTakenAt()
 	await testConfigAfterDelay()
 }
 

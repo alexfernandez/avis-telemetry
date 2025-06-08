@@ -15,6 +15,7 @@ async function postMeasure(request, reply) {
 		storeMeasure(device, measure, takenAt)
 		return {ok: true}
 	} catch(error) {
+		// console.error(error.stack)
 		reply.status(400)
 		return {error: error.message}
 	}
@@ -33,6 +34,7 @@ async function putConfig(request, reply) {
 		storeConfig(device, request.body)
 		return {ok: true}
 	} catch(error) {
+		// console.error(error.stack)
 		reply.status(400)
 		return {error: error.message}
 	}
