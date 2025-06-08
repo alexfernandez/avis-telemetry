@@ -1,6 +1,6 @@
 {
   "name": "avis-telemetry",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "type": "module",
   "description": "Telemetry for the avis aeterna project",
   "main": "bin/start.js",
