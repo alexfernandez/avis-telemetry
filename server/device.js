@@ -27,10 +27,15 @@ async function getLatestMeasure(request) {
 	return record
 }
 
-async function putConfig(request) {
-	const {device} = request.params
-	storeConfig(device, request.body)
-	return {ok: true}
+async function putConfig(request, reply) {
+	try {
+		const {device} = request.params
+		storeConfig(device, request.body)
+		return {ok: true}
+	} catch(error) {
+		reply.status(400)
+		return {error: error.message}
+	}
 }
 
 async function getConfig(request) {
