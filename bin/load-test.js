@@ -1,5 +1,6 @@
 import {getopt} from 'stdio'
 import {randomUUID} from 'crypto'
+import {sleepMs} from '../core/sleep.js'
 
 
 await run()
@@ -27,8 +28,16 @@ async function runLoadTest({rps, device, server, time}) {
 		if (nowMs - startMs > timeMs) {
 			return
 		}
-		sendMeasure(server, device)
-		await sleep(delayMs)
+		sendMeasureSafe(server, device)
+		await sleepMs(delayMs)
+	}
+}
+
+async function sendMeasureSafe(server, device) {
+	try {
+		await sendMeasure(server, device)
+	} catch(error) {
+		console.error(`Could not send measure: ${error.stack}`)
 	}
 }
 
@@ -47,9 +56,5 @@ async function sendMeasure(server, device) {
 	})
 	const result = await response.json()
 	console.log(response.status, result)
-}
-
-function sleep(ms) {
-	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
