@@ -65,7 +65,7 @@ function serialize(measure) {
 }
 
 export function readLatestMeasure(device) {
-	return findLatest('measures', {'device = ?': device}, 'takenAt DESC, createdAt DESC')
+	return findLatest('measures', {'device = ?': device}, 'takenAt DESC')
 }
 
 export function storeConfig(device, config) {
