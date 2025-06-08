@@ -55,6 +55,25 @@ async function testMeasures() {
 	console.assert(result4.measure.numeric == measure2.numeric, 'should have new text value')
 }
 
+async function testInvalidMeasures() {
+	const measure1 = {
+		takenAt: new Date(),
+	}
+	for (let i = 0; i < 100; i++) {
+		measure1[`key${i}`] = 'a'.repeat(100)
+	}
+	const response1 = await app.inject({
+		url: `/devices/${deviceId}/measures`,
+		method: 'POST',
+		headers: {'user-agent': userAgent},
+		body: measure1,
+	})
+	console.assert(response1.statusCode == 400, `should not post measure`)
+	const result = response1.json()
+	console.assert(!result.ok, 'should not be ok')
+	console.assert(result.error, 'should have error')
+}
+
 async function testConfig() {
 	const config1 = {
 		lever: 'value',
@@ -109,6 +128,7 @@ async function testConfig() {
 
 export default async function test() {
 	await testMeasures()
+	await testInvalidMeasures()
 	await testConfig()
 }
 

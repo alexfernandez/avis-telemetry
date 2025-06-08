@@ -1,6 +1,7 @@
 import {randomUUID} from 'crypto'
 import {createTable, insertRegister, findLatest} from './sqlite.js'
 
+const sizeLimit = 8 * 1024
 init()
 
 
@@ -24,10 +25,18 @@ export function storeMeasure(device, measure, takenAt) {
 	const data = {
 		id: randomUUID(),
 		device,
-		measure: JSON.stringify(measure),
+		measure: serializeMeasure(measure),
 		takenAt,
 	}
 	return insertRegister('measures', data)
+}
+
+function serializeMeasure(measure) {
+	const serialized = JSON.stringify(measure)
+	if (serialized.length > sizeLimit) {
+		throw new Error(`Size ${serialized.length} is above the current limit of ${sizeLimit}`)
+	}
+	return serialized
 }
 
 export function readLatestMeasure(device) {
