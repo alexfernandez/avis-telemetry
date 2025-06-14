@@ -10,9 +10,8 @@ async function start() {
 			level: 'info',
 		},
 	})
-	console.log(app.log)
-	const server = new UdpServer(app.log)
 	try {
+		const server = new UdpServer(app.log)
 		await setup(app)
 		await app.listen({port, host: '0.0.0.0'})
 		await server.start()

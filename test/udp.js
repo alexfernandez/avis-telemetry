@@ -37,7 +37,7 @@ async function testUdpPacket() {
 }
 
 export default async function test() {
-	const server = new UdpServer(console)
+	const server = new UdpServer(app.log)
 	await server.start()
 	await testUdpPacket()
 	await server.close()
