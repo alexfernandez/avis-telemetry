@@ -16,7 +16,7 @@ export function createDevicePage(device) {
 	</header>
 	<article>
 		<h2>Latest Measure</h2>
-		<p>Taken at ${config.takenAt || config.createdAt}:</p>
+		<p>Taken at ${latestMeasure.takenAt}:</p>
 		<table>
 			<thead>
 				<tr>
