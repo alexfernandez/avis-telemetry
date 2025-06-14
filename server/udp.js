@@ -23,17 +23,17 @@ export class UdpServer {
 	}
 
 	receive(payload, info) {
-		this.logger.info(`${new Date().toISOString()} Received ${payload.length} bytes from udp: ${info.address}:${info.port}`)
+		this.logger.info(`Received ${payload.length} bytes from udp: ${info.address}:${info.port}`)
 		try {
 			this.process(payload)
 		} catch(error) {
-			this.logger.warn(`${new Date().toISOString()} Could not process message`)
+			this.logger.warn(`Could not process message`)
 		}
 	}
 
 	process(payload) {
 		const {device, takenAt, ...message} = JSON.parse(payload)
-		storeMeasure(device, message, takenAt)
+		storeMeasure(device, message, takenAt, 'udp')
 	}
 
 	close() {
