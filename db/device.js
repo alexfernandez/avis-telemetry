@@ -66,7 +66,12 @@ function serialize(measure) {
 }
 
 export function readLatestMeasure(device) {
-	return findLatest('measures', {'device = ?': device}, 'takenAt DESC')
+	const latest = findLatest('measures', {'device = ?': device}, 'takenAt DESC')
+	if (!latest) {
+		return null
+	}
+	latest.measure = JSON.parse(latest.measure)
+	return latest
 }
 
 export function storeConfig(device, config) {
@@ -84,7 +89,12 @@ function checkConfig(device) {
 }
 
 export function readConfig(device) {
-	return findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+	const latest = findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+	if (!latest) {
+		return null
+	}
+	latest.config = JSON.parse(latest.config)
+	return latest
 }
 
 export function setMinDelayMs(testMinDelayMs) {
