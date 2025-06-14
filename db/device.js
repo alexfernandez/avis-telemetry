@@ -12,6 +12,7 @@ function init() {
 	createTable('measures', {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
+		source: 'TEXT NOT NULL',
 		measure: 'JSON NOT NULL',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 		takenAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
@@ -24,12 +25,13 @@ function init() {
 	})
 }
 
-export function storeMeasure(device, measure, takenAt) {
+export function storeMeasure(device, measure, takenAt, source) {
 	checkMeasure(device)
 	const message = {
 		id: randomUUID(),
 		device,
 		measure: serialize(measure),
+		source,
 	}
 	if (takenAt) {
 		message.takenAt = takenAt

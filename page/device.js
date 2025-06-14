@@ -15,21 +15,6 @@ export function createDevicePage(device) {
         </div>
 	</header>
 	<article>
-		<h2>
-		Configuration
-		</h2>
-		<p>Received at ${config.createdAt}:</p>
-		<table>
-			<thead>
-				<tr>
-				<th>Key</th>
-				<th>Value</th>
-				</tr>
-			</thead>
-			<tbody>
-				${createRows(config.config)}
-			</tbody>
-		</table>
 		<h2>Latest Measure</h2>
 		<p>Taken at ${config.takenAt || config.createdAt}:</p>
 		<table>
@@ -41,6 +26,19 @@ export function createDevicePage(device) {
 			</thead>
 			<tbody>
 				${createRows(latestMeasure.measure)}
+			</tbody>
+		</table>
+		<h2>Device Configuration</h2>
+		<p>Received at ${config.createdAt}:</p>
+		<table>
+			<thead>
+				<tr>
+				<th>Key</th>
+				<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				${createRows(config.config)}
 			</tbody>
 		</table>
 

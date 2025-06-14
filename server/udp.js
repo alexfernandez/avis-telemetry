@@ -33,7 +33,7 @@ export class UdpServer {
 
 	process(payload) {
 		const {device, takenAt, ...message} = JSON.parse(payload)
-		storeMeasure(device, message, takenAt)
+		storeMeasure(device, message, takenAt, 'udp')
 	}
 
 	close() {
