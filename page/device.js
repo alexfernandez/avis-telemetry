@@ -29,18 +29,7 @@ export function createDevicePage(device) {
 			</tbody>
 		</table>
 		<h2>Device Configuration</h2>
-		<p>Received at ${config.createdAt}:</p>
-		<table>
-			<thead>
-				<tr>
-				<th>Key</th>
-				<th>Value</th>
-				</tr>
-			</thead>
-			<tbody>
-				${createRows(config.config)}
-			</tbody>
-		</table>
+		${createConfigFrom(config)}
 
 	</article>
 ${createFooter()}`
@@ -57,5 +46,25 @@ function createRows(object) {
 		rows.push(row)
 	}
 	return rows.join('\n')
+}
+
+function createConfigFrom(config) {
+	if (!config) {
+		return `<p>No device configuration</p>`
+	}
+	return `
+		<p>Received at ${config.createdAt}:</p>
+		<table>
+			<thead>
+				<tr>
+				<th>Key</th>
+				<th>Value</th>
+				</tr>
+			</thead>
+			<tbody>
+				${createRows(config.config)}
+			</tbody>
+		</table>
+		`
 }
 
