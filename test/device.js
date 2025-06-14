@@ -1,10 +1,11 @@
 import {randomUUID} from 'crypto'
 import {app, userAgent} from './setup.js'
 import {sleepMs} from '../core/sleep.js'
-import config from '../core/config.js'
+import {setMinDelayMs} from '../db/device.js'
 
 const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 const altDeviceId = `test-device-${randomUUID().substring(0, 8)}`
+const testMinDelayMs = 100
 
 
 async function testMeasure() {
@@ -186,13 +187,13 @@ async function testConfigAfterDelay() {
 }
 
 export default async function test() {
-	config.minDelayMs = 100
+	setMinDelayMs(testMinDelayMs)
 	await testMeasure()
 	await testConfig()
 	await testInvalidCalls()
-	await sleepMs(config.minDelayMs + 1)
+	await sleepMs(testMinDelayMs + 1)
 	await testMeasureAfterDelay()
-	await sleepMs(config.minDelayMs + 1)
+	await sleepMs(testMinDelayMs + 1)
 	await testMeasureWithoutTakenAt()
 	await testConfigAfterDelay()
 }

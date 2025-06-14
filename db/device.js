@@ -1,9 +1,10 @@
 import {randomUUID} from 'crypto'
 import {createTable, insertRegister, findLatest} from './sqlite.js'
-import config from '../core/config.js'
+import {maxDeviceLength, minDelayMs, sizeLimit} from '../core/config.js'
 
 const latestMeasure = new Map()
 const latestConfig = new Map()
+let configuredMinDelayMs = minDelayMs
 init()
 
 
@@ -44,28 +45,33 @@ function checkLatest(device, map) {
 	if (!device) {
 		throw new Error('Missing device code')
 	}
-	if (device.length >= config.maxDeviceLength) {
-		throw new Error(`Device code too long, should be under ${config.maxDeviceLength} characters`)
+	if (device.length >= maxDeviceLength) {
+		throw new Error(`Device code too long, should be under ${maxDeviceLength} characters`)
 	}
 	const nowMs = Date.now()
 	const latestMs = map.get(device)
 	const diffMs = nowMs - latestMs
-	if (nowMs - latestMs < config.minDelayMs) {
-		throw new Error(`Delay between writes ${diffMs} ms was too short; should be at least ${config.minDelayMs} ms`)
+	if (nowMs - latestMs < configuredMinDelayMs) {
+		throw new Error(`Delay between writes ${diffMs} ms was too short; should be at least ${configuredMinDelayMs} ms`)
 	}
 	map.set(device, nowMs)
 }
 
 function serialize(measure) {
 	const serialized = JSON.stringify(measure)
-	if (serialized.length > config.sizeLimit) {
-		throw new Error(`Size ${serialized.length} is above the current limit of ${config.sizeLimit}`)
+	if (serialized.length > sizeLimit) {
+		throw new Error(`Size ${serialized.length} is above the current limit of ${sizeLimit}`)
 	}
 	return serialized
 }
 
 export function readLatestMeasure(device) {
-	return findLatest('measures', {'device = ?': device}, 'takenAt DESC')
+	const latest = findLatest('measures', {'device = ?': device}, 'takenAt DESC')
+	if (!latest) {
+		return null
+	}
+	latest.measure = JSON.parse(latest.measure)
+	return latest
 }
 
 export function storeConfig(device, config) {
@@ -83,6 +89,15 @@ function checkConfig(device) {
 }
 
 export function readConfig(device) {
-	return findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+	const latest = findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+	if (!latest) {
+		return null
+	}
+	latest.config = JSON.parse(latest.config)
+	return latest
+}
+
+export function setMinDelayMs(testMinDelayMs) {
+	configuredMinDelayMs = testMinDelayMs
 }
 

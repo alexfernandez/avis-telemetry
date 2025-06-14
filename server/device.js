@@ -11,11 +11,12 @@ export default async function setup(app) {
 async function postMeasure(request, reply) {
 	try {
 		const {device} = request.params
+		request.log.info(`${new Date().toISOString()} Received http message from ${request.ip} for device ${device}`)
 		const {takenAt, ...measure} = request.body
 		storeMeasure(device, measure, takenAt)
 		return {ok: true}
 	} catch(error) {
-		// console.error(error.stack)
+		request.log.warn(error.stack)
 		reply.status(400)
 		return {error: error.message}
 	}
@@ -23,9 +24,7 @@ async function postMeasure(request, reply) {
 
 async function getLatestMeasure(request) {
 	const {device} = request.params
-	const record = readLatestMeasure(device)
-	record.measure = JSON.parse(record.measure)
-	return record
+	return readLatestMeasure(device)
 }
 
 async function putConfig(request, reply) {
@@ -43,6 +42,6 @@ async function putConfig(request, reply) {
 async function getConfig(request) {
 	const {device} = request.params
 	const record = readConfig(device)
-	return JSON.parse(record.config)
+	return record?.config
 }
 
