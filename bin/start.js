@@ -1,4 +1,5 @@
 import Fastify from 'fastify'
+import {port} from '../core/config.js'
 import setup from '../server/setup.js'
 
 
@@ -10,7 +11,7 @@ async function start() {
 	})
 	try {
 		await setup(app)
-		await app.listen({port: 4215, host: '0.0.0.0'})
+		await app.listen({port, host: '0.0.0.0'})
 	} catch (error) {
 		app.log.error(error)
 		process.exit(1)
