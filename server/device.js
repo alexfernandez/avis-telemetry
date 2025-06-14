@@ -11,7 +11,7 @@ export default async function setup(app) {
 async function postMeasure(request, reply) {
 	try {
 		const {device} = request.params
-		request.log.info(`${new Date().toISOString()} Received http message from ${request.ip} for device ${device}`)
+		request.log.info(`Received http message from ${request.ip} for device ${device}`)
 		const {takenAt, ...measure} = request.body
 		storeMeasure(device, measure, takenAt)
 		return {ok: true}
