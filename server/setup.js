@@ -1,5 +1,5 @@
-import homePlugin from './server/home.js'
-import devicePlugin from './server/device.js'
+import homePlugin from './home.js'
+import devicePlugin from './device.js'
 
 
 export default function setup(app) {
