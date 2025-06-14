@@ -1,11 +1,18 @@
 import {storeMeasure, readLatestMeasure, storeConfig, readConfig} from '../db/device.js'
+import {createDevicePage} from '../page/device.js'
 
 
 export default async function setup(app) {
+	app.get('/show/:device', serveDevicePage)
 	app.post('/devices/:device/measures', postMeasure)
 	app.get('/devices/:device/measures/latest', getLatestMeasure)
 	app.put('/devices/:device/config', putConfig)
 	app.get('/devices/:device/config', getConfig)
+}
+
+async function serveDevicePage(request, reply) {
+	reply.type('text/html')
+	return createDevicePage(request.params.device)
 }
 
 async function postMeasure(request, reply) {

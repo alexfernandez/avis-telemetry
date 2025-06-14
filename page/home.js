@@ -57,7 +57,7 @@ function createRows(devices) {
 	const rows = []
 	for (const {device, total} of devices) {
 		const row = `		<tr>
-			<td>${device}</td>
+			<td><a href="/show/${device}">${device}</a></td>
 			<td class="numeric">${total}</td>
 		</tr>`
 		rows.push(row)
