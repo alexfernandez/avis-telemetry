@@ -33,6 +33,9 @@ async function testMeasure() {
 	console.assert(result2.measure, 'should have measure')
 	console.assert(result2.measure.text == measure1.text, 'should have text value')
 	console.assert(result2.measure.numeric == measure1.numeric, 'should have numeric value')
+	console.assert(result2.takenAt, 'should have takenAt')
+	console.assert(typeof result2.source == 'string', 'should have string source')
+	console.assert(result2.source.startsWith('http'), 'should have post source')
 }
 
 async function testConfig() {

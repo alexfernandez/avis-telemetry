@@ -31,9 +31,12 @@ async function testUdpPacket() {
 	console.assert(response1.statusCode == 200, `could not get latest measure`)
 	const result1 = response1.json()
 	console.assert(result1, 'should have result')
+	console.assert(result1.device, 'should have device')
 	console.assert(result1.measure, 'should have measure')
 	console.assert(result1.measure.text == message.text, 'should have text value')
 	console.assert(result1.measure.numeric == message.numeric, 'should have text value')
+	console.assert(typeof result1.source == 'string', 'should have string source')
+	console.assert(result1.source.startsWith('udp '), 'should have udp source')
 }
 
 export default async function test() {
