@@ -20,7 +20,7 @@ async function postMeasure(request, reply) {
 		const {device} = request.params
 		request.log.info(`Received http message from ${request.ip} for device ${device}`)
 		const {takenAt, ...measure} = request.body
-		storeMeasure(device, measure, takenAt, 'post')
+		storeMeasure(device, measure, takenAt, `post ${request.ip}`)
 		return {ok: true}
 	} catch(error) {
 		request.log.warn(error.stack)
