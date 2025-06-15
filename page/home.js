@@ -64,6 +64,26 @@ export function createHome(latestDevices) {
 		<code>
 		$ echo '{"device": "udp-test-device", "value": 76}' | nc -4u -q 1 avistel.es 4215
 		</code>
+		<p>
+		You can also store remote configurations and much more,
+		please take a look at 
+		<a href="https://github.com/alexfernandez/avis-telemetry/blob/main/docs/api.md">the complete API</a>.
+
+		<h2>Compliance</h2>
+
+		<p>
+		This site does not track you in any way.
+		We keep a visit counter using <a href="https://librecounter.org/">LibreCounter.org</a>,
+		which is fully GDPR-compliant.
+		</p>
+		<p>
+		Any device information sent to <a href="https://avistel.es/">avistel.es</a> is stored in our server,
+		and displayed publicly to anyone with the curiosity to find it.
+		Never send any personally-identifying information.
+		If you have sensitive data please
+		<a href="https://github.com/alexfernandez/avis-telemetry/blob/main/docs/install.md">set up your own server</a>
+		and use it instead,
+		it is quite straightforward!
 
 	</article>
 ${createFooter()}`
