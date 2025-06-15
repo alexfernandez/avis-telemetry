@@ -33,3 +33,8 @@ a {
     text-decoration: none;
 }
 
+code {
+	padding: 10px;
+	background: #efefef;
+}
+

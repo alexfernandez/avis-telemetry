@@ -33,21 +33,37 @@ export function createHome(latestDevices) {
 		</table>
 		<h2>How to Use</h2>
 		<p>
-		Send your measures to the API endpoint:
-		</p>
-		<code>
-		POST https://avistel.es/devices/[deviceId]/measures
-		</code>
-		<p>
 		Add your telemetry measures to the body as a simple key-value JSON:
 		</p>
 		<code>
 		{"height": 5, "name": "my-rover", "takenAt": "2025-06-07T19:02:57Z"}
 		</code>
 		<p>
+		Send your measures to the API endpoint:
+		</p>
+		<code>
+		POST https://avistel.es/devices/[deviceId]/measures
+		</code>
+		<p>
+		Try it out with this simple Unix command:
+		</p>
+		<code>
+		$ curl -d '{"value": 75}' -H "Content-Type: application/json" https://avistel.es/devices/web-test-device/measures
+		</code>
+		<p>
+		Where <tt>web-test-device</tt> will be the device identifier.
 		That's it!
 		Your telemetry will be collected for your later use.
 		</p>
+		<h3>Using UDP</h3>
+		<p>
+		To avoid tying up your device with complex HTTPS requests,
+		you can also send a UDP package to the 4215 port on the <tt>avistel.es</tt> server.
+		In this case you should include the device identifier in the JSON:
+		</p>
+		<code>
+		$ echo '{"device": "udp-test-device", "value": 76}' | nc -4u -q 1 avistel.es 4215
+		</code>
 
 	</article>
 ${createFooter()}`
