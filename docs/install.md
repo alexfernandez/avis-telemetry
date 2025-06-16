@@ -5,20 +5,20 @@ You will need Node.js, nginx and a solid OS (preferably Linux-based).
 
 ## Basic Installation
 
-We will attempt to do so using [Ubuntu LTS](https://releases.ubuntu.com/).
+We will outline how to install on [Ubuntu LTS](https://releases.ubuntu.com/).
 It is quite similar using Fedora Linux and other distributions.
 
 First download [Node.js](https://nodejs.org/en/download)
 using [NodeSource](https://github.com/nodesource/distributions?tab=readme-ov-file#debian-and-ubuntu-based-distributions),
-which on Ubuntu sets up a nice package which is updated automatically with security patches.
-After running the setup script, just install it:
+which on Ubuntu sets up a nice package regularly updated with security patches.
+After running the setup script, just install `nodejs`:
 
 ```
 $ sudo apt install nodejs
 ```
 
 Now download [avis-telemetry](https://github.com/alexfernandez/avis-telemetry) on the home directory,
-enter this directory and install the necessary packages:
+enter the new directory and install the necessary packages:
 
 ```
 git clone https://github.com/alexfernandez/avis-telemetry.git
@@ -26,16 +26,17 @@ cd avis-telemetry
 npm install
 ```
 
-To run it just invoke it:
+To run the server you can invoke it using the following command:
 
 ```
 npm start
 ```
 
-You should see a nice prompt, and be ready to accept requests to port 4215 by default.
+At this point you should see a nice prompt, stating it is ready to accept requests to port 4215 by default.
 
 ## Nginx
 
+Now we need to expose our new Node.js server to the outside world.
 To secure access, first install nginx:
 
 ```
@@ -43,7 +44,7 @@ $ sudo apt install nginx
 ```
 
 Now edit a file called e.g. `/etc/nginx/sites-enabled/avis-telemetry.conf`,
-and configure in your domain (e.g. `avistel.pinchito.es`):
+and configure for your particular domain (e.g. `avistel.pinchito.es`):
 
 ```
 server {
