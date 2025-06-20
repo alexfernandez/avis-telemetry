@@ -26,7 +26,7 @@ curl -d '{"value": 75}' -H "Content-Type: application/json" https://avistel.es/d
 
 **Note**:
 The API will reject measures if they are sent more often than once per second.
-There is currently a size limitation of 8 KB per measure,
+There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
 
 ### Get latest measure: `GET devices/:device/measures/latest`
@@ -65,7 +65,7 @@ curl -X -d '{"param": 17}' -H "Content-Type: application/json" https://avistel.e
 
 **Note**:
 The API will reject configurations if they are sent more often than once per second.
-There is currently a size limitation of 8 KB per configuration,
+There is currently a size limitation of 1024 bytes per configuration,
 which can be modified without notice.
 
 ### Retrieve configuration: `GET /devices/:device/config`
@@ -138,6 +138,6 @@ In this case you must provide the device identifier in the body.
 
 **Note**:
 The API will reject configurations if they are sent more often than once per second.
-There is currently a size limitation of 8 KB per measure,
+There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
 
