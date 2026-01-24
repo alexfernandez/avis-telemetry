@@ -20,8 +20,7 @@ export function createDevicePage(device) {
 		<table>
 			<thead>
 				<tr>
-				<th>Key</th>
-				<th>Value</th>
+				${createHeader(latestMeasure.measure)}
 				</tr>
 			</thead>
 			<tbody>
@@ -35,15 +34,25 @@ export function createDevicePage(device) {
 ${createFooter()}`
 }
 
+function createHeader(object) {
+	if (!object) {
+		return ''
+	}
+	const rows = []
+	for (const key in object) {
+		rows.push(`            <th>${key}</th>`)
+	}
+	return rows.join('\n')
+}
+
 function createRows(object) {
+	if (!object) {
+		return ''
+	}
 	const rows = []
 	for (const key in object) {
 		const value = object[key]
-		const row = `		<tr>
-			<td>${key}</td>
-			<td class="numeric">${value}</td>
-		</tr>`
-		rows.push(row)
+		rows.push(`<td class="numeric">${value}</td>`)
 	}
 	return rows.join('\n')
 }
