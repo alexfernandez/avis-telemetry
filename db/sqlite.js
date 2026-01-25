@@ -33,20 +33,20 @@ function generateInsert(table, keys) {
 
 export function findLatest(table, where, order) {
 	const select = getSelect(table, Object.keys(where), order)
-	const values = [...Object.values(where), order]
+	const values = Object.values(where)
 	const results = db.prepare(select).get(values)
 	return results
 }
 
 export function findLastRecords(table, where, order, limit) {
 	const select = getSelect(table, Object.keys(where), order, limit)
-	const values = [...Object.values(where), order, limit]
+	const values = [...Object.values(where), limit]
 	const results = db.prepare(select).all(values)
 	return results
 }
 
 function getSelect(table, where, order, limit) {
-	const limitClause = order ? `ORDER BY ?` : ''
+	const limitClause = order ? `ORDER BY ${order}` : ''
 	const orderClause = limit ? `LIMIT ?` : ''
 	return `SELECT * FROM ${table} WHERE ${where.join(' AND ')} ${limitClause} ${orderClause}`
 }
