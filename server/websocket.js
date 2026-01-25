@@ -1,10 +1,8 @@
-import FastifyWebSocket from '@fastify/websocket'
 
 const listenersPerDevice = new Map()
 
 
 export default async function setup(app) {
-	app.register(FastifyWebSocket)
 	app.get('/sync/:device', {websocket: true}, sync)
 }
 
@@ -17,7 +15,7 @@ async function sync(socket, {request}) {
 
 export async function sendMeasure(measure) {
 	const device = measure.device
-	console.log(`Syncing measure for ${device}`, measure)
+	// console.log(`Syncing measure for ${device}`, measure)
 	const listeners = listenersPerDevice.get(device)
 	if (!listeners) {
 		return

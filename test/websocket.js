@@ -1,9 +1,8 @@
 import {randomUUID} from 'crypto'
 import dgram from 'node:dgram'
 import {port} from '../core/config.js'
-import {UdpServer} from '../server/udp.js'
 import {sleepMs} from '../core/sleep.js'
-import {app, userAgent} from './setup.js'
+import {app, udpServer, userAgent} from './setup.js'
 
 const device = `test-device-${randomUUID().substring(0, 8)}`
 
@@ -23,6 +22,7 @@ async function testWebsocket() {
 		console.assert(!error, `should send without error`)
 	})
 	await sleepMs(100)
+	//console.log(app)
 	const websocket1 = await app.injectWS(`/sync/${device}`, {
 		headers: {'user-agent': userAgent},
 	})
@@ -48,9 +48,7 @@ async function testWebsocket() {
 }
 
 export default async function test() {
-	const server = new UdpServer(app.log)
-	await server.start()
 	await testWebsocket()
-	await server.close()
+	await udpServer.close()
 }
 
