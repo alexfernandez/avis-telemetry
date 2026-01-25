@@ -46,8 +46,7 @@ export function readLatestMeasure(device) {
 	if (!latest) {
 		return null
 	}
-	latest.measure = JSON.parse(latest.measure)
-	return latest
+	return convertMeasure(latest)
 }
 
 export function readLastMeasures(device, limit) {
@@ -61,10 +60,16 @@ export function readLastMeasures(device, limit) {
 	if (!records?.length) {
 		return []
 	}
-	for (const record of records) {
-		record.measure = JSON.parse(record.measure)
+	return records.map(convertMeasure)
+}
+
+function convertMeasure(record) {
+	return {
+		...record,
+		takenAt: new Date(record.takenAt + 'Z').toISOString(),
+		createdAt: new Date(record.createdAt + 'Z').toISOString(),
+		measure: JSON.parse(record.measure),
 	}
-	return records
 }
 
 export function storeConfig(config) {

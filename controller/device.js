@@ -13,7 +13,10 @@ let configuredMinDelayMs = minDelayMs
 export async function processMeasure(device, measure, takenAt, source) {
 	const message = buildMeasure(device, measure, takenAt, source)
 	storeMeasure(message)
-	await sendMeasure(message)
+	await sendMeasure({
+		...message,
+		takenAt: takenAt || new Date(),
+	})
 }
 
 function buildMeasure(device, measure, takenAt, source) {
