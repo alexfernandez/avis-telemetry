@@ -97,7 +97,6 @@ function createConfigFrom(config) {
 	}
 	const keys = extractKeys([config], 'config')
 	return `
-		<p>Received at ${config.createdAt}:</p>
 		<table>
 			<thead>
 				<tr>

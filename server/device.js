@@ -53,7 +53,7 @@ async function getLastMeasures(request, reply) {
 async function putConfig(request, reply) {
 	try {
 		const {device} = request.params
-		storeConfig(device, request.body)
+		storeConfig(device, request.body, `post ${request.ip}`)
 		return {ok: true}
 	} catch(error) {
 		// console.error(error.stack)

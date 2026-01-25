@@ -96,12 +96,13 @@ export function readLastMeasures(device, limit) {
 	return records
 }
 
-export function storeConfig(device, config) {
+export function storeConfig(device, config, source) {
 	checkConfig(device)
 	const message = {
 		id: randomUUID(),
 		device,
 		config: serialize(config),
+		source,
 	}
 	return insertRegister('configs', message)
 }
