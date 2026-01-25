@@ -3,6 +3,7 @@ env:
   node: true
   mocha: true
   es6: true
+  browser: true
 extends: eslint:recommended
 parserOptions:
   sourceType: module

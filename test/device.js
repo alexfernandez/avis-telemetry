@@ -1,11 +1,11 @@
 import {randomUUID} from 'crypto'
 import {app, userAgent} from './setup.js'
 import {sleepMs} from '../core/sleep.js'
-import {setMinDelayMs} from '../db/device.js'
+import {setMinDelayMs} from '../controller/device.js'
 
 const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 const altDeviceId = `test-device-${randomUUID().substring(0, 8)}`
-const testMinDelayMs = 100
+const testMinDelayMs = 50
 
 
 async function testMeasure() {
@@ -35,7 +35,7 @@ async function testMeasure() {
 	console.assert(result2.measure.numeric == measure1.numeric, 'should have numeric value')
 	console.assert(result2.takenAt, 'should have takenAt')
 	console.assert(typeof result2.source == 'string', 'should have string source')
-	console.assert(result2.source.startsWith('http'), 'should have post source')
+	console.assert(result2.source.startsWith('post'), 'should have post source')
 }
 
 async function testConfig() {
@@ -189,6 +189,45 @@ async function testConfigAfterDelay() {
 	console.assert(!result4.once, 'should not have once value')
 }
 
+async function testLastMeasures() {
+	const limit = 10
+	const measure1 = {
+		text: 'value',
+		numeric: 87,
+		takenAt: new Date(),
+	}
+	for (let index = 0; index < limit + 1; index++) {
+		const response1 = await app.inject({
+			url: `/devices/${deviceId}/measures`,
+			method: 'POST',
+			headers: {'user-agent': userAgent},
+			body: measure1,
+		})
+		console.assert(response1.statusCode == 200, `could not post measure ${index}`)
+		console.assert(response1.json().ok, `should post measure ${index} ok`)
+	}
+	const response2 = await app.inject({
+		url: `/devices/${deviceId}/measures/last/${limit}`,
+		method: 'GET',
+		headers: {'user-agent': userAgent},
+	})
+	console.assert(response2.statusCode == 200, `could not get last measures`)
+	const result2 = response2.json()
+	console.assert(result2?.length, 'should have results')
+	console.assert(result2.length == limit, `should have ${limit} results`)
+	for (const record of result2) {
+		console.assert(record.measure, 'should have measure')
+		console.assert(record.measure.numeric == measure1.numeric, 'should have numeric value')
+		console.assert(record.takenAt, 'should have takenAt')
+	}
+	const response3 = await app.inject({
+		url: `/devices/${deviceId}/measures/last/1000`,
+		method: 'GET',
+		headers: {'user-agent': userAgent},
+	})
+	console.assert(response3.statusCode == 400, `should not get too many measures`)
+}
+
 export default async function test() {
 	setMinDelayMs(testMinDelayMs)
 	await testMeasure()
@@ -199,5 +238,7 @@ export default async function test() {
 	await sleepMs(testMinDelayMs + 1)
 	await testMeasureWithoutTakenAt()
 	await testConfigAfterDelay()
+	setMinDelayMs(0)
+	await testLastMeasures()
 }
 

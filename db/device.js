@@ -1,12 +1,11 @@
-import {randomUUID} from 'crypto'
-import {createTable, insertRegister, findLatest} from './sqlite.js'
-import {maxDeviceLength, minDelayMs, sizeLimit} from '../core/config.js'
+import {
+	createTable, insertRegister, findLatest, findLastRecords,
+} from './sqlite.js'
 
-const latestMeasure = new Map()
-const latestConfig = new Map()
-let configuredMinDelayMs = minDelayMs
+import {sizeLimit, maxMeasureLimit} from '../core/config.js'
+
+
 init()
-
 
 function init() {
 	createTable('measures', {
@@ -21,42 +20,17 @@ function init() {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
 		config: 'JSON NOT NULL',
+		source: 'TEXT NOT NULL',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 }
 
-export function storeMeasure(device, measure, takenAt, source) {
-	checkMeasure(device)
-	const message = {
-		id: randomUUID(),
-		device,
-		measure: serialize(measure),
-		source,
+export function storeMeasure(measure) {
+	const serialized = {
+		...measure,
+		measure: serialize(measure.measure)
 	}
-	if (takenAt) {
-		message.takenAt = takenAt
-	}
-	return insertRegister('measures', message)
-}
-
-function checkMeasure(device) {
-	checkLatest(device, latestMeasure)
-}
-
-function checkLatest(device, map) {
-	if (!device) {
-		throw new Error('Missing device code')
-	}
-	if (device.length >= maxDeviceLength) {
-		throw new Error(`Device code too long, should be under ${maxDeviceLength} characters`)
-	}
-	const nowMs = Date.now()
-	const latestMs = map.get(device)
-	const diffMs = nowMs - latestMs
-	if (nowMs - latestMs < configuredMinDelayMs) {
-		throw new Error(`Delay between writes ${diffMs} ms was too short; should be at least ${configuredMinDelayMs} ms`)
-	}
-	map.set(device, nowMs)
+	return insertRegister('measures', serialized)
 }
 
 function serialize(measure) {
@@ -72,22 +46,48 @@ export function readLatestMeasure(device) {
 	if (!latest) {
 		return null
 	}
-	latest.measure = JSON.parse(latest.measure)
-	return latest
+	return convertMeasure(latest)
 }
 
-export function storeConfig(device, config) {
-	checkConfig(device)
-	const message = {
-		id: randomUUID(),
-		device,
-		config: serialize(config),
+export function readLastMeasures(device, limit) {
+	if (!limit) {
+		return []
 	}
-	return insertRegister('configs', message)
+	if (limit > maxMeasureLimit) {
+		throw new Error(`Too many measures requested, max ${maxMeasureLimit}`)
+	}
+	const records = findLastRecords('measures', {'device = ?': device}, 'takenAt DESC', limit)
+	if (!records?.length) {
+		return []
+	}
+	return records.map(convertMeasure)
 }
 
-function checkConfig(device) {
-	checkLatest(device, latestConfig)
+function convertMeasure(record) {
+	return {
+		...record,
+		takenAt: convertDate(record.takenAt),
+		createdAt: convertDate(record.createdAt),
+		measure: JSON.parse(record.measure),
+	}
+}
+
+function convertDate(date) {
+	if (!date) {
+		return null
+	}
+	if (date.endsWith('Z')) {
+		return date
+	}
+	return new Date(date + 'Z').toISOString()
+}
+
+export function storeConfig(config) {
+	const serialized = {
+		...config,
+		config: serialize(config.config)
+	}
+	return insertRegister('configs', serialized)
 }
 
 export function readConfig(device) {
@@ -97,9 +97,5 @@ export function readConfig(device) {
 	}
 	latest.config = JSON.parse(latest.config)
 	return latest
-}
-
-export function setMinDelayMs(testMinDelayMs) {
-	configuredMinDelayMs = testMinDelayMs
 }
 

@@ -1,6 +1,6 @@
 import dgram from 'node:dgram'
 import {port} from '../core/config.js'
-import {storeMeasure} from '../db/device.js'
+import {processMeasure} from '../controller/device.js'
 
 
 export class UdpServer {
@@ -33,7 +33,7 @@ export class UdpServer {
 
 	process(payload, ip) {
 		const {device, takenAt, ...message} = JSON.parse(payload)
-		storeMeasure(device, message, takenAt, `udp ${ip}`)
+		processMeasure(device, message, takenAt, `udp ${ip}`)
 	}
 
 	close() {

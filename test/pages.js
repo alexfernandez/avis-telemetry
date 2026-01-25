@@ -8,8 +8,8 @@ async function testHomePage() {
 		const url = match[1]
 		await testPage(url, [
 			'for Device ',
-			'Latest Measure',
-			'Taken at',
+			'Last Measures',
+			'takenAt',
 			'Device Configuration',
 		])
 	}

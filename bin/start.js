@@ -1,7 +1,6 @@
 import Fastify from 'fastify'
 import {port} from '../core/config.js'
-import setup from '../server/setup.js'
-import {UdpServer} from '../server/udp.js'
+import {setup, setupUdp} from '../server/setup.js'
 
 
 async function start() {
@@ -11,10 +10,9 @@ async function start() {
 		},
 	})
 	try {
-		const server = new UdpServer(app.log)
 		await setup(app)
 		await app.listen({port, host: '0.0.0.0'})
-		await server.start()
+		await setupUdp(app)
 	} catch (error) {
 		app.log.error(error)
 		process.exit(1)

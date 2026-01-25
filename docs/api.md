@@ -25,7 +25,7 @@ curl -d '{"value": 75}' -H "Content-Type: application/json" https://avistel.es/d
 ```
 
 **Note**:
-The API will reject measures if they are sent more often than once per second.
+The API will reject measures if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
 
@@ -43,6 +43,22 @@ Returns:
 
 ```
 {"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}
+```
+
+### Get last n measures: `GET devices/:device/measures/last/:limit`
+
+Returns the last `limit` measures as a JSON array.
+
+Bash example:
+
+```
+wget https://avistel.es/devices/api-test-device/measures/last/10
+```
+
+Returns:
+
+```
+[{"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}, ...]
 ```
 
 Or just browse [the page](https://avistel.es/devices/api-test-device/measures/latest)
@@ -64,7 +80,7 @@ curl -X -d '{"param": 17}' -H "Content-Type: application/json" https://avistel.e
 ```
 
 **Note**:
-The API will reject configurations if they are sent more often than once per second.
+The API will reject configurations if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per configuration,
 which can be modified without notice.
 
@@ -137,7 +153,7 @@ void loop() {
 In this case you must provide the device identifier in the body.
 
 **Note**:
-The API will reject configurations if they are sent more often than once per second.
+The API will reject configurations if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
 
