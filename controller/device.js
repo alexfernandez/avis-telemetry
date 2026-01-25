@@ -2,7 +2,7 @@ import {randomUUID} from 'crypto'
 import {
 	storeMeasure, storeConfig,
 } from '../db/device.js'
-import {maxDeviceLength, minDelayMs, sizeLimit} from '../core/config.js'
+import {maxDeviceLength, minDelayMs} from '../core/config.js'
 import {sendMeasure} from '../server/websocket.js'
 
 const latestMeasure = new Map()

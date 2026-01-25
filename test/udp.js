@@ -2,7 +2,7 @@ import {randomUUID} from 'crypto'
 import dgram from 'node:dgram'
 import {port} from '../core/config.js'
 import {sleepMs} from '../core/sleep.js'
-import {app, udpServer, userAgent} from './setup.js'
+import {app, userAgent} from './setup.js'
 
 const device = `test-device-${randomUUID().substring(0, 8)}`
 
@@ -40,6 +40,5 @@ async function testUdpPacket() {
 
 export default async function test() {
 	await testUdpPacket()
-	await udpServer.close()
 }
 

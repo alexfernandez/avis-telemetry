@@ -6,28 +6,30 @@ export default async function setup(app) {
 	app.get('/sync/:device', {websocket: true}, sync)
 }
 
-async function sync(socket, {request}) {
+async function sync(socket, request) {
 	const device = request.params.device
+	// socket.on('message', message => console.log(`Received ${message}`))
 	request.log.info(`New listener for ${device} on ${request.ip}`)
-	const listeners = listenersPerDevice.get(device) || []
-	listeners.push(socket)
+	if (!listenersPerDevice.has(device)) {
+		listenersPerDevice.set(device, [])
+	}
+	listenersPerDevice.get(device).push(socket)
 }
 
 export async function sendMeasure(measure) {
 	const device = measure.device
-	// console.log(`Syncing measure for ${device}`, measure)
+	// console.log(`Syncing measure for ${device}`)
 	const listeners = listenersPerDevice.get(device)
 	if (!listeners) {
 		return
 	}
 	for (const listener of listeners) {
-		console.log(listener)
-		console.log(`Updating ${listener} for ${device}`)
 		try {
-			listener.send({
+			const message = {
 				device,
 				measure,
-			})
+			}
+			listener.send(Buffer.from(JSON.stringify(message)))
 		} catch(error) {
 			console.warn(error.stack)
 			listener.close()
