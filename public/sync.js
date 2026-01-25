@@ -1,6 +1,8 @@
 
 
 checkDevice(window.location.href)
+let coolOffSeconds = 1
+const maxCoolOffSeconds = 300
 
 function checkDevice(href) {
 	const url = URL.parse(href)
@@ -26,8 +28,8 @@ function connectToSync(device, url) {
 			reject(error)
 		})
 		socket.addEventListener('close', async() => {
-			await sleep(1000)
-			console.log(`Reconnecting to server`)
+			console.log(`Reconnecting in ${coolOffSeconds} seconds...`)
+			await sleep(coolOffSeconds * 1000)
 			await connectAndRetry(device, url)
 		})
 	})
@@ -37,9 +39,10 @@ async function connectAndRetry(device, url) {
 	try {
 		await connectToSync(device, url)
 		console.log(`Syncing to device ${device}`)
+		coolOffSeconds = 1
 	} catch(error) {
-		await sleep(1000)
-		await connectAndRetry(device, url)
+		// will reconnect on its own
+		coolOffSeconds = Math.min(coolOffSeconds * 2, maxCoolOffSeconds)
 	}
 }
 
