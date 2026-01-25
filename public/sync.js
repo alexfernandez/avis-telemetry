@@ -9,26 +9,40 @@ function checkDevice(href) {
 		return
 	}
 	const device = url.pathname.substring(slug.length)
-	console.log(`*** connecting to ${device}`)
-	connectToSync(device, url)
+	connectAndRetry(device, url)
 }
 
 function connectToSync(device, url) {
-	console.log(`Syncing to device ${device}`)
-	const destination = `${url.origin.replace(/^http/, 'ws')}/sync/${device}`
-	const socket = new WebSocket(destination)
-	socket.addEventListener('open', () => console.log(`Connected to server`))
-	socket.addEventListener('message', message => {
-		const measure = JSON.parse(message.data)
-		console.log(`Message from server`, measure)
-		showMeasure(measure)
+	return new Promise((resolve, reject) => {
+		const destination = `${url.origin.replace(/^http/, 'ws')}/sync/${device}`
+		const socket = new WebSocket(destination)
+		socket.addEventListener('open', resolve)
+		socket.addEventListener('message', message => {
+			const measure = JSON.parse(message.data)
+			console.log(`Showing new measure`)
+			showMeasure(measure)
+		})
+		socket.addEventListener('error', error => {
+			console.warn(`Websocket error:`, error)
+			reject(error)
+		})
+		socket.addEventListener('close', async() => {
+			await sleep(1000)
+			console.log(`Reconnecting to server`)
+			await connectAndRetry(device, url)
+		})
 	})
-	socket.addEventListener('error', error => console.warn(`Websocket error:`, error))
-	socket.addEventListener('close', async() => {
+}
+
+async function connectAndRetry(device, url) {
+	try {
+		await connectToSync(device, url)
+		console.log(`Syncing to device ${device}`)
+	} catch(error) {
+		console.warn(`Could not connect to ${url}; retrying`)
 		await sleep(1000)
-		console.log(`Reconnecting to server`)
-		//connectToSync(device, url)
-	})
+		await connectAndRetry(device, url)
+	}
 }
 
 function showMeasure(measure) {
