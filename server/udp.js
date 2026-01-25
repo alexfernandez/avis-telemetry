@@ -32,8 +32,8 @@ export class UdpServer {
 	}
 
 	process(payload, ip) {
-		const {device, takenAt, secret, ...message} = JSON.parse(payload)
-		processMeasure({device, source: `udp ${ip}`, takenAt, secret, message})
+		const {device, takenAt, secret, ...measure} = JSON.parse(payload)
+		processMeasure({device, source: `udp ${ip}`, takenAt, secret, measure})
 	}
 
 	close() {
