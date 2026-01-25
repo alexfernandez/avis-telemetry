@@ -74,7 +74,7 @@ function createRows(measures, keys) {
 			return ''
 		}
 		const row = createRow(measure, keys)
-		const fullRow = [`    <tr class="row measure">`, ...row, `    <tr>`]
+		const fullRow = [`    <tr class="row measure">`, ...row, `    </tr>`]
 		rows.push(fullRow.join('\n'))
 	}
 	return rows.join('\n')

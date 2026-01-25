@@ -59,8 +59,7 @@ function showMeasure(measure) {
 	}
 	const tbody = document.getElementsByClassName('tbody measure')[0]
 	tbody.prepend(row)
-	const lastRow = tbody.lastChild
-	tbody.removeChild(lastRow)
+	tbody.removeChild(tbody.children[tbody.children.length - 1])
 }
 
 function sleep(ms) {
