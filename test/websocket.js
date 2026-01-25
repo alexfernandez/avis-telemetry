@@ -21,7 +21,6 @@ async function testWebsocket() {
 	client.send(data, port, 'localhost', (error) => {
 		console.assert(!error, `should send without error`)
 	})
-	await sleepMs(100)
 	const websocket1 = await app.injectWS(`/sync/${device}`, {
 		headers: {'user-agent': userAgent},
 	})
@@ -32,7 +31,6 @@ async function testWebsocket() {
 	})
 	await sleepMs(100)
 	client.send(data, port, 'localhost', (error) => {
-		console.log(`Sent ${error}`)
 		console.assert(!error, `should send again without error`)
 	})
 	await sleepMs(100)

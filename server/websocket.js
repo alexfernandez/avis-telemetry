@@ -2,7 +2,7 @@
 const listenersPerDevice = new Map()
 
 
-export default async function setup(app) {
+export async function setupWebsocket(app) {
 	app.get('/sync/:device', {websocket: true}, sync)
 }
 
@@ -24,6 +24,9 @@ export async function sendMeasure(measure) {
 		return
 	}
 	for (const listener of listeners) {
+		if (!listener) {
+			continue
+		}
 		try {
 			const message = {
 				device,
@@ -33,7 +36,14 @@ export async function sendMeasure(measure) {
 		} catch(error) {
 			console.warn(error.stack)
 			listener.close()
+			const index = listeners.indexOf(listener);
+			if (index != -1) {
+				listeners[index] = null
+			}
 		}
 	}
+}
+
+export async function closeListeners() {
 }
 
