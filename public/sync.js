@@ -25,7 +25,7 @@ function connectToSync(device, url) {
 	socket.addEventListener('close', async() => {
 		await sleep(1000)
 		console.log(`Reconnecting to server`)
-		connectToSync(device, url)
+		//connectToSync(device, url)
 	})
 }
 

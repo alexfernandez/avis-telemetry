@@ -1,8 +1,9 @@
 import {
-	storeMeasure, readLatestMeasure, readLastMeasures,
+	readLatestMeasure, readLastMeasures,
 	storeConfig, readConfig,
 } from '../db/device.js'
 import {createDevicePage} from '../page/device.js'
+import {processMeasure} from './measure.js'
 
 
 export default async function setup(app) {
@@ -24,7 +25,7 @@ async function postMeasure(request, reply) {
 		const {device} = request.params
 		request.log.info(`Received http message from ${request.ip} for device ${device}`)
 		const {takenAt, ...measure} = request.body
-		storeMeasure(device, measure, takenAt, `post ${request.ip}`)
+		await processMeasure(device, measure, takenAt, `post ${request.ip}`)
 		return {ok: true}
 	} catch(error) {
 		request.log.warn(error.stack)

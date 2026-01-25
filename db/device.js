@@ -29,7 +29,7 @@ function init() {
 	})
 }
 
-export function storeMeasure(device, measure, takenAt, source) {
+export function buildMeasure(device, measure, takenAt, source) {
 	checkMeasure(device)
 	const message = {
 		id: randomUUID(),
@@ -40,6 +40,10 @@ export function storeMeasure(device, measure, takenAt, source) {
 	if (takenAt) {
 		message.takenAt = takenAt
 	}
+	return message
+}
+
+export function storeMeasure(message) {
 	return insertRegister('measures', message)
 }
 
