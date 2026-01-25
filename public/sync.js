@@ -23,7 +23,6 @@ function connectToSync(device, url) {
 			showMeasure(measure)
 		})
 		socket.addEventListener('error', error => {
-			console.warn(`Websocket error:`, error)
 			reject(error)
 		})
 		socket.addEventListener('close', async() => {
@@ -39,7 +38,6 @@ async function connectAndRetry(device, url) {
 		await connectToSync(device, url)
 		console.log(`Syncing to device ${device}`)
 	} catch(error) {
-		console.warn(`Could not connect to ${url}; retrying`)
 		await sleep(1000)
 		await connectAndRetry(device, url)
 	}
