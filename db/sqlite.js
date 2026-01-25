@@ -54,12 +54,12 @@ function getSelect(table, where, order, limit) {
 export function findGrouped(table, conditions, group, limit = 10) {
 	const where = Object.keys(conditions)
 	const select = getSelectGroup('measures', where, group, limit)
-	const values = [...Object.values(conditions), group, limit]
+	const values = [...Object.values(conditions), limit]
 	return db.prepare(select).all(values)
 }
 
 function getSelectGroup(table, where, group, limit) {
-	const groupClause = group ? `GROUP BY ?` : ''
+	const groupClause = group ? `GROUP BY ${group}` : ''
 	const limitClause = limit ? `ORDER BY total DESC LIMIT ?` : ''
 	return `SELECT ${group}, count(*) as total FROM ${table} WHERE ${where.join(' AND ')} ${groupClause} ${limitClause}`
 }

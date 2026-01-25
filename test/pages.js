@@ -4,8 +4,9 @@ import {app, userAgent} from './setup.js'
 async function testHomePage() {
 	const home = await testPage(`/`, 'Avis Telemetry')
 	const matches = home.matchAll(/<a.href="(\/[^"]+)"/g)
-	for (const match of matches) {
-		const url = match[1]
+	const urls = [...matches.map(match => match[1])]
+	console.assert(urls.length > 0, 'should match at least one URL')
+	for (const url of urls) {
 		await testPage(url, [
 			'for Device ',
 			'Last Measures',
@@ -26,7 +27,7 @@ async function testPage(url, checks, expectedStatus = 200) {
 	console.assert(page, `did not page ${url}`)
 	const checkArray = checks.length ? checks : [checks]
 	for (const check of checkArray) {
-		console.assert(response.payload.includes(check), `failed page ${url} for ${check}`)
+		console.assert(page.includes(check), `failed page ${url} for ${check}`)
 	}
 	return page
 }
