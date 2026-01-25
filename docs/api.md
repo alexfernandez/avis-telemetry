@@ -45,6 +45,22 @@ Returns:
 {"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}
 ```
 
+### Get last n measures: `GET devices/:device/measures/last/:limit`
+
+Returns the last `limit` measures as a JSON array.
+
+Bash example:
+
+```
+wget https://avistel.es/devices/api-test-device/measures/last/10
+```
+
+Returns:
+
+```
+[{"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}, ...]
+```
+
 Or just browse [the page](https://avistel.es/devices/api-test-device/measures/latest)
 changing your device identifier instead of `api-test-device`.
 
