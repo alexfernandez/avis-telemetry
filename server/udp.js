@@ -1,6 +1,6 @@
 import dgram from 'node:dgram'
 import {port} from '../core/config.js'
-import {processMeasure} from './measure.js'
+import {processMeasure} from '../controller/device.js'
 
 
 export class UdpServer {

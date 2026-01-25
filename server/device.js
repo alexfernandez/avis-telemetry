@@ -1,9 +1,8 @@
 import {
-	readLatestMeasure, readLastMeasures,
-	storeConfig, readConfig,
+	readLatestMeasure, readLastMeasures, readConfig,
 } from '../db/device.js'
 import {createDevicePage} from '../page/device.js'
-import {processMeasure} from './measure.js'
+import {processMeasure, processConfig} from '../controller/device.js'
 
 
 export default async function setup(app) {
@@ -54,7 +53,7 @@ async function getLastMeasures(request, reply) {
 async function putConfig(request, reply) {
 	try {
 		const {device} = request.params
-		storeConfig(device, request.body, `post ${request.ip}`)
+		await processConfig(device, request.body, `post ${request.ip}`)
 		return {ok: true}
 	} catch(error) {
 		// console.error(error.stack)

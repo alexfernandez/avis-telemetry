@@ -1,7 +1,7 @@
 import {randomUUID} from 'crypto'
 import {app, userAgent} from './setup.js'
 import {sleepMs} from '../core/sleep.js'
-import {setMinDelayMs} from '../db/device.js'
+import {setMinDelayMs} from '../controller/device.js'
 
 const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 const altDeviceId = `test-device-${randomUUID().substring(0, 8)}`
