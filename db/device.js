@@ -1,5 +1,6 @@
 import {
-	createTable, insertRegister, findLatest, findLastRecords,
+	createTable, alterTable,
+	insertRegister, findLatest, findLastRecords,
 } from './sqlite.js'
 
 import {sizeLimit, maxMeasureLimit} from '../core/config.js'
@@ -13,14 +14,16 @@ function init() {
 		device: 'TEXT NOT NULL',
 		source: 'TEXT NOT NULL',
 		measure: 'JSON NOT NULL',
+		secret: 'TEXT',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 		takenAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 	createTable('configs', {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
-		config: 'JSON NOT NULL',
 		source: 'TEXT NOT NULL',
+		config: 'JSON NOT NULL',
+		secret: 'TEXT',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 }
@@ -65,7 +68,9 @@ export function readLastMeasures(device, limit) {
 
 function convertMeasure(record) {
 	return {
-		...record,
+		id: record.id,
+		device: record.device,
+		source: record.source,
 		takenAt: convertDate(record.takenAt),
 		createdAt: convertDate(record.createdAt),
 		measure: JSON.parse(record.measure),
@@ -95,7 +100,25 @@ export function readConfig(device) {
 	if (!latest) {
 		return null
 	}
-	latest.config = JSON.parse(latest.config)
-	return latest
+	return convertConfig(latest)
+}
+
+function convertConfig(record) {
+	return {
+		id: record.id,
+		device: record.device,
+		source: record.source,
+		createdAt: convertDate(record.createdAt),
+		config: JSON.parse(record.config),
+	}
+}
+
+export function addConfigSource() {
+	alterTable('configs', `source TEXT NOT NULL DEFAULT '-'`)
+}
+
+export function addSecrets() {
+	alterTable('measures', 'secret TEXT')
+	alterTable('configs', 'secret TEXT')
 }
 

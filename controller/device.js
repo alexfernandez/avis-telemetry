@@ -10,22 +10,23 @@ const latestConfig = new Map()
 let configuredMinDelayMs = minDelayMs
 
 
-export async function processMeasure(device, measure, takenAt, source) {
-	const message = buildMeasure(device, measure, takenAt, source)
+export async function processMeasure(measure) {
+	const message = buildMeasure(measure)
 	storeMeasure(message)
 	await sendMeasure({
 		...message,
-		takenAt: takenAt || new Date(),
+		takenAt: measure.takenAt || new Date(),
 	})
 }
 
-function buildMeasure(device, measure, takenAt, source) {
+function buildMeasure({device, measure, takenAt, secret, source}) {
 	checkMeasure(device)
 	const message = {
 		id: randomUUID(),
 		device,
 		measure,
 		source,
+		secret,
 	}
 	if (takenAt) {
 		message.takenAt = takenAt
@@ -53,13 +54,14 @@ function checkLatest(device, map) {
 	map.set(device, nowMs)
 }
 
-export async function processConfig(device, config, source) {
-	checkConfig(device)
+export async function processConfig({device, source, secret, config}) {
+	checkConfig(device, secret)
 	const message = {
 		id: randomUUID(),
 		device,
-		config,
 		source,
+		secret,
+		config,
 	}
 	storeConfig(message)
 }

@@ -16,9 +16,16 @@ export function createTable(table, fields) {
 	db.exec(createTable)
 }
 
-export function addConfigSource() {
-	const alterTable = `ALTER TABLE configs ADD COLUMN source TEXT NOT NULL DEFAULT '-'`
+export function alterTable(table, column) {
+	const alterTable = `ALTER TABLE ${table} ADD COLUMN ${column}`
 	db.exec(alterTable)
+}
+
+export function addSecrets() {
+	const alterMeasure = `ALTER TABLE configs ADD COLUMN secret TEXT`
+	db.exec(alterMeasure)
+	const alterConfig = `ALTER TABLE measures ADD COLUMN secret TEXT`
+	db.exec(alterConfig)
 }
 
 export function insertRegister(table, message) {
