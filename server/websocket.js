@@ -45,5 +45,12 @@ export async function sendMeasure(measure) {
 }
 
 export async function closeListeners() {
+	for (const listeners of listenersPerDevice.values()) {
+		for (const listener of listeners) {
+			if (listener) {
+				await listener.close()
+			}
+		}
+	}
 }
 

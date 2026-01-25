@@ -11,5 +11,4 @@ await testUdp()
 await testWebsocket()
 close()
 await closeTests()
-console.log('closed')
 

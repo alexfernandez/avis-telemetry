@@ -16,4 +16,3 @@ export async function closeTests() {
 	await udpServer.close()
 }
 
-
