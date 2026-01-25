@@ -44,6 +44,7 @@ async function testWebsocket() {
 	console.assert(typeof message.measure.source == 'string', 'should have string source')
 	console.assert(message.measure.source.startsWith('udp '), 'should have udp source')
 	websocket1.terminate()
+	client.close()
 }
 
 export default async function test() {
