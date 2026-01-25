@@ -35,10 +35,10 @@ function createMeasureTable(measures) {
 		<table>
 			<thead>
 				<tr>
-				${createHeader(keys)}
+				${createHeader(keys, 'measure')}
 				</tr>
 			</thead>
-			<tbody>
+			<tbody class="tbody measure">
 				${createRows(measures, keys)}
 			</tbody>
 		</table>
@@ -55,14 +55,14 @@ function extractKeys(measures, field = 'measure') {
 	return Object.keys(counts)
 }
 
-function createHeader(keys) {
+function createHeader(keys, type) {
 	if (!keys?.length) {
 		return ''
 	}
 	const fullKeys = ['takenAt', 'source', ...keys]
 	const rows = []
 	for (const key of fullKeys) {
-		rows.push(`            <th>${key}</th>`)
+		rows.push(`            <th class="header ${type}">${key}</th>`)
 	}
 	return rows.join('\n')
 }
@@ -74,7 +74,7 @@ function createRows(measures, keys) {
 			return ''
 		}
 		const row = createRow(measure, keys)
-		const fullRow = [`    <tr>`, ...row, `    <tr>`]
+		const fullRow = [`    <tr class="row measure">`, ...row, `    <tr>`]
 		rows.push(fullRow.join('\n'))
 	}
 	return rows.join('\n')
@@ -88,7 +88,7 @@ function createRow(object, keys, field = 'measure') {
 	for (const key of keys) {
 		values.push(object[field][key] ?? '--')
 	}
-	return values.map(value => `      <td class="numeric">${value}</td>`)
+	return values.map(value => `      <td class="numeric ${field}">${value}</td>`)
 }
 
 function createConfigFrom(config) {
@@ -100,7 +100,7 @@ function createConfigFrom(config) {
 		<table>
 			<thead>
 				<tr>
-				${createHeader(keys)}
+				${createHeader(keys, 'config')}
 				</tr>
 			</thead>
 			<tbody>
