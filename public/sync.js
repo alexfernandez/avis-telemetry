@@ -52,7 +52,7 @@ function showMeasure(measure) {
 	row.className = 'row measure'
 	for (const header of headers) {
 		const key = header.innerText
-		const value = measure[key] || measure.measure[key]
+		const value = measure[key] || measure.measure[key] || '--'
 		const cell = document.createElement('td')
 		cell.innerText = value
 		cell.className = 'numeric measure'
