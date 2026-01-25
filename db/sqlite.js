@@ -32,9 +32,16 @@ export function findLatest(table, where, order) {
 	return results
 }
 
-function getSelect(table, where, order) {
-	const orderClause = order ? `ORDER BY ${order}` : ''
-	return `SELECT * FROM ${table} WHERE ${where.join(' AND ')} ${orderClause}`
+export function findLastRecords(table, where, order, limit) {
+	const select = getSelect(table, Object.keys(where), order, limit)
+	const results = db.prepare(select).all(Object.values(where))
+	return results
+}
+
+function getSelect(table, where, order, limit) {
+	const limitClause = order ? `ORDER BY ${order}` : ''
+	const orderClause = limit ? `LIMIT ${limit}` : ''
+	return `SELECT * FROM ${table} WHERE ${where.join(' AND ')} ${limitClause} ${orderClause}`
 }
 
 export function findGrouped(table, conditions, group, limit = 10) {

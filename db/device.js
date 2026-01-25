@@ -1,9 +1,12 @@
 import {randomUUID} from 'crypto'
-import {createTable, insertRegister, findLatest} from './sqlite.js'
+import {
+	createTable, insertRegister, findLatest, findLastRecords,
+} from './sqlite.js'
 import {maxDeviceLength, minDelayMs, sizeLimit} from '../core/config.js'
 
 const latestMeasure = new Map()
 const latestConfig = new Map()
+const maxLimit = 100
 let configuredMinDelayMs = minDelayMs
 init()
 
@@ -74,6 +77,23 @@ export function readLatestMeasure(device) {
 	}
 	latest.measure = JSON.parse(latest.measure)
 	return latest
+}
+
+export function readLastMeasures(device, limit) {
+	if (!limit) {
+		return []
+	}
+	if (limit > maxLimit) {
+		throw new Error(`Too many measures requested, max ${maxLimit}`)
+	}
+	const records = findLastRecords('measures', {'device = ?': device}, 'takenAt DESC', limit)
+	if (!records?.length) {
+		return []
+	}
+	for (const record of records) {
+		record.measure = JSON.parse(record.measure)
+	}
+	return records
 }
 
 export function storeConfig(device, config) {
