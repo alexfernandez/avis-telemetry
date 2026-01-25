@@ -21,7 +21,7 @@ function buildMeasure(device, measure, takenAt, source) {
 	const message = {
 		id: randomUUID(),
 		device,
-		measure: serialize(measure),
+		measure,
 		source,
 	}
 	if (takenAt) {
@@ -50,20 +50,12 @@ function checkLatest(device, map) {
 	map.set(device, nowMs)
 }
 
-function serialize(measure) {
-	const serialized = JSON.stringify(measure)
-	if (serialized.length > sizeLimit) {
-		throw new Error(`Size ${serialized.length} is above the current limit of ${sizeLimit}`)
-	}
-	return serialized
-}
-
 export async function processConfig(device, config, source) {
 	checkConfig(device)
 	const message = {
 		id: randomUUID(),
 		device,
-		config: serialize(config), // E: 'serialize' is not defined.
+		config,
 		source,
 	}
 	storeConfig(message)

@@ -2,7 +2,7 @@ import {
 	createTable, insertRegister, findLatest, findLastRecords,
 } from './sqlite.js'
 
-const maxLimit = 100
+import {sizeLimit, maxMeasureLimit} from '../core/config.js'
 
 
 init()
@@ -26,7 +26,16 @@ function init() {
 }
 
 export function storeMeasure(message) {
+	message.measure = serialize(message.measure)
 	return insertRegister('measures', message)
+}
+
+function serialize(measure) {
+	const serialized = JSON.stringify(measure)
+	if (serialized.length > sizeLimit) {
+		throw new Error(`Size ${serialized.length} is above the current limit of ${sizeLimit}`)
+	}
+	return serialized
 }
 
 export function readLatestMeasure(device) {
@@ -42,8 +51,8 @@ export function readLastMeasures(device, limit) {
 	if (!limit) {
 		return []
 	}
-	if (limit > maxLimit) {
-		throw new Error(`Too many measures requested, max ${maxLimit}`)
+	if (limit > maxMeasureLimit) {
+		throw new Error(`Too many measures requested, max ${maxMeasureLimit}`)
 	}
 	const records = findLastRecords('measures', {'device = ?': device}, 'takenAt DESC', limit)
 	if (!records?.length) {
@@ -56,6 +65,7 @@ export function readLastMeasures(device, limit) {
 }
 
 export function storeConfig(config) {
+	config.config = serialize(config.config)
 	return insertRegister('configs', config)
 }
 
