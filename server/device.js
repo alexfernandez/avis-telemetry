@@ -21,10 +21,10 @@ async function serveDevicePage(request, reply) {
 
 async function postMeasure(request, reply) {
 	try {
-		const {device} = request.params
-		request.log.info(`Received http message from ${request.ip} for device ${device}`)
+		const {device, ip} = readFromRequest(request)
+		request.log.info(`Received measure from ${ip} for device ${device}`)
 		const {takenAt, ...measure} = request.body
-		await processMeasure(device, measure, takenAt, `post ${request.ip}`)
+		await processMeasure(device, measure, takenAt, `post ${ip}`)
 		return {ok: true}
 	} catch(error) {
 		request.log.warn(error.stack)
@@ -52,14 +52,21 @@ async function getLastMeasures(request, reply) {
 
 async function putConfig(request, reply) {
 	try {
-		const {device} = request.params
-		await processConfig(device, request.body, `post ${request.ip}`)
+		const {device, ip} = readFromRequest(request)
+		request.log.info(`Received config from ${ip} for device ${device}`)
+		await processConfig(device, request.body, `post ${ip}`)
 		return {ok: true}
 	} catch(error) {
 		// console.error(error.stack)
 		reply.status(400)
 		return {error: error.message}
 	}
+}
+
+function readFromRequest(request) {
+	const {device} = request.params
+	const ip = request.headers['x-real-ip'] || request.ip
+	return {device, ip}
 }
 
 async function getConfig(request) {
