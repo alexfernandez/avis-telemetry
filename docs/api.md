@@ -25,7 +25,7 @@ curl -d '{"value": 75}' -H "Content-Type: application/json" https://avistel.es/d
 ```
 
 **Note**:
-The API will reject measures if they are sent more often than once per second.
+The API will reject measures if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
 
@@ -80,7 +80,7 @@ curl -X -d '{"param": 17}' -H "Content-Type: application/json" https://avistel.e
 ```
 
 **Note**:
-The API will reject configurations if they are sent more often than once per second.
+The API will reject configurations if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per configuration,
 which can be modified without notice.
 
@@ -153,7 +153,7 @@ void loop() {
 In this case you must provide the device identifier in the body.
 
 **Note**:
-The API will reject configurations if they are sent more often than once per second.
+The API will reject configurations if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
 

@@ -5,7 +5,7 @@ import {setMinDelayMs} from '../db/device.js'
 
 const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 const altDeviceId = `test-device-${randomUUID().substring(0, 8)}`
-const testMinDelayMs = 100
+const testMinDelayMs = 50
 
 
 async function testMeasure() {
