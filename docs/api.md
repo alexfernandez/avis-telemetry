@@ -21,13 +21,15 @@ Info stored includes device identifier `:device`, date received, and IP address.
 Bash example:
 
 ```
-curl -d '{"value": 75}' -H "Content-Type: application/json" https://avistel.es/devices/api-test-device/measures
+curl -d '{"value": 75, "secret": "api"}' -H "Content-Type: application/json" https://avistel.es/devices/api-test-device/measures
 ```
 
 **Note**:
 The API will reject measures if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
+The API will reject measures where the `secret` does not match the previous value,
+to avoid spoofing.
 
 ### Get latest measure: `GET devices/:device/measures/latest`
 
@@ -45,6 +47,9 @@ Returns:
 {"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}
 ```
 
+**Note**:
+The API will not return the `secret` with the measure.
+
 ### Get last n measures: `GET devices/:device/measures/last/:limit`
 
 Returns the last `limit` measures as a JSON array.
@@ -61,8 +66,11 @@ Returns:
 [{"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}, ...]
 ```
 
-Or just browse [the page](https://avistel.es/devices/api-test-device/measures/latest)
+Or just browse [the device page](https://avistel.es/devices/api-test-device/measures/latest)
 changing your device identifier instead of `api-test-device`.
+
+**Note**:
+Neither the API nor the pages will return the `secret` with the measures.
 
 ### Store configuration: `PUT /devices/:device/config`
 
@@ -76,13 +84,15 @@ Info stored includes device identifier `:device`, date received, and IP address.
 Bash example:
 
 ```
-curl -X -d '{"param": 17}' -H "Content-Type: application/json" https://avistel.es/devices/api-test-device/config
+curl -X -d '{"param": 17, "secret": "api"}' -H "Content-Type: application/json" https://avistel.es/devices/api-test-device/config
 ```
 
 **Note**:
 The API will reject configurations if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per configuration,
 which can be modified without notice.
+The API will reject configurations where the `secret` does not match the previous value,
+to avoid spoofing.
 
 ### Retrieve configuration: `GET /devices/:device/config`
 
@@ -95,8 +105,11 @@ wget https://avistel.es/devices/api-test-device/config
 curl https://avistel.es/devices/api-test-device/config
 ```
 
-Or just browse [the page](https://avistel.es/devices/api-test-device/config)
+Or just browse [the device page](https://avistel.es/devices/api-test-device)
 changing your device identifier instead of `api-test-device`.
+
+**Note**:
+Neither the API nor the pages will return the `secret` with the config.
 
 ## UDP API
 
@@ -114,13 +127,13 @@ except that the `"device"` identifier must be included in the JSON document.
 JSON example:
 
 ```
-{"device": "udp-test-device", "value": 76}
+{"device": "udp-test-device", "value": 76, "secret": "udp"}
 ```
 
 Bash example:
 
 ```
-echo '{"device": "udp-test-device", "value": 76}' | nc -4u -q 1 avistel.es 4215
+echo '{"device": "udp-test-device", "value": 76, "secret": "udp"}' | nc -4u -q 1 avistel.es 4215
 ```
 
 Arduino example, using the [ArduinoJson](project):
@@ -131,6 +144,8 @@ JsonDocument doc;
 char output[1024];
 const char *udpAddress = "avistel.es";
 const int udpPort = 4215;
+const char *device = "arduino-test-device";
+const char *secret = "my-secret";
 
 void setup() {
   // ... connect to the internet, possibly using WiFi
@@ -138,8 +153,9 @@ void setup() {
 
 void loop() {
   while (true) {
-    doc["device"] = "arduino-test-device";
+    doc["device"] = device;
     doc["value"] = 7;
+    doc["secret"] = secret;
     // ... add other values as string or number
     serializeJson(doc, output);
     udp.beginPacket(udpAddress, udpPort);
@@ -156,4 +172,6 @@ In this case you must provide the device identifier in the body.
 The API will reject configurations if they are sent more often than 10 times per second.
 There is currently a size limitation of 1024 bytes per measure,
 which can be modified without notice.
+The API will reject measures where the `secret` does not match the previous value,
+to avoid spoofing.
 

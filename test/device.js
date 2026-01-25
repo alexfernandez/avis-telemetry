@@ -5,6 +5,7 @@ import {setMinDelayMs} from '../controller/device.js'
 
 const deviceId = `test-device-${randomUUID().substring(0, 8)}`
 const altDeviceId = `test-device-${randomUUID().substring(0, 8)}`
+const secretDeviceId = `test-device-${randomUUID().substring(0, 8)}`
 const testMinDelayMs = 50
 
 
@@ -38,6 +39,56 @@ async function testMeasure() {
 	console.assert(result2.source.startsWith('post'), 'should have post source')
 }
 
+async function testMeasureWithSecret() {
+	const measure0 = {
+		text: 'value1',
+	}
+	const response0 = await app.inject({
+		url: `/devices/${secretDeviceId}/measures`,
+		method: 'POST',
+		headers: {'user-agent': userAgent},
+		body: measure0,
+	})
+	console.assert(response0.statusCode == 200, `could not post measure without secret`)
+	console.assert(response0.json().ok, 'should post measure without secret')
+	await sleepMs(10)
+	const measure1 = {
+		text: 'value2',
+		secret: "The larch",
+	}
+	const response1 = await app.inject({
+		url: `/devices/${secretDeviceId}/measures`,
+		method: 'POST',
+		headers: {'user-agent': userAgent},
+		body: measure1,
+	})
+	console.assert(response1.statusCode == 200, `could not post measure with secret: ${response1.statusCode}`)
+	console.assert(response1.json().ok, 'should post measure with secret')
+	const response2 = await app.inject({
+		url: `/devices/${secretDeviceId}/measures/latest`,
+		method: 'GET',
+		headers: {'user-agent': userAgent},
+	})
+	console.assert(response2.statusCode == 200, `could not get latest measure`)
+	const result2 = response2.json()
+	console.assert(result2, 'should have result')
+	console.assert(!result2.secret, 'should not have secret in result')
+	console.assert(result2.measure, 'should have measure')
+	console.assert(result2.measure.text == 'value2', 'should have last value')
+	console.assert(!result2.measure.secret, 'should not have secret in measure')
+	const measure3 = {
+		text: 'value',
+		secret: "Illustrated History of False Teeth",
+	}
+	const response3 = await app.inject({
+		url: `/devices/${secretDeviceId}/measures`,
+		method: 'POST',
+		headers: {'user-agent': userAgent},
+		body: measure3,
+	})
+	console.assert(response3.statusCode == 400, `should not post measure with bad secret`)
+}
+
 async function testConfig() {
 	const config1 = {
 		lever: 'value',
@@ -63,6 +114,41 @@ async function testConfig() {
 	console.assert(result2.lever == config1.lever, 'should have text value')
 	console.assert(result2.range == config1.range, 'should have numeric value')
 	console.assert(result2.once == config1.once, 'should have once value')
+}
+
+async function testConfigWithSecret() {
+	const config1 = {
+		lever: 'value1',
+		secret: "the Big Cheese gets his at low tide tonight",
+	}
+	const response1 = await app.inject({
+		url: `/devices/${secretDeviceId}/config`,
+		method: 'PUT',
+		headers: {'user-agent': userAgent},
+		body: config1,
+	})
+	console.assert(response1.statusCode == 200, `could not put config with secret`)
+	console.assert(response1.json().ok, 'should put config with secret')
+	const response2 = await app.inject({
+		url: `/devices/${secretDeviceId}/config`,
+		method: 'GET',
+		headers: {'user-agent': userAgent},
+	})
+	console.assert(response2.statusCode == 200, `could not get config`)
+	const result2 = response2.json()
+	console.assert(result2, 'should have config')
+	console.assert(!result2.secret, 'should not have secret in config')
+	const config3 = {
+		lever: 'value',
+		secret: "I hear the gooseberries are doing well this year",
+	}
+	const response3 = await app.inject({
+		url: `/devices/${secretDeviceId}/config`,
+		method: 'PUT',
+		headers: {'user-agent': userAgent},
+		body: config3,
+	})
+	console.assert(response3.statusCode == 400, `should not put config with bad secret`)
 }
 
 async function testInvalidCalls() {
@@ -229,9 +315,12 @@ async function testLastMeasures() {
 }
 
 export default async function test() {
-	setMinDelayMs(testMinDelayMs)
+	setMinDelayMs(0)
 	await testMeasure()
+	await testMeasureWithSecret()
 	await testConfig()
+	await testConfigWithSecret()
+	setMinDelayMs(testMinDelayMs)
 	await testInvalidCalls()
 	await sleepMs(testMinDelayMs + 1)
 	await testMeasureAfterDelay()

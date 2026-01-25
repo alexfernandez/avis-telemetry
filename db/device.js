@@ -1,5 +1,6 @@
 import {
-	createTable, insertRegister, findLatest, findLastRecords,
+	createTable, alterTable,
+	insertRegister, findLatest, findLastRecords,
 } from './sqlite.js'
 
 import {sizeLimit, maxMeasureLimit} from '../core/config.js'
@@ -13,14 +14,16 @@ function init() {
 		device: 'TEXT NOT NULL',
 		source: 'TEXT NOT NULL',
 		measure: 'JSON NOT NULL',
+		secret: 'TEXT',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 		takenAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 	createTable('configs', {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
-		config: 'JSON NOT NULL',
 		source: 'TEXT NOT NULL',
+		config: 'JSON NOT NULL',
+		secret: 'TEXT',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 }
@@ -42,11 +45,15 @@ function serialize(measure) {
 }
 
 export function readLatestMeasure(device) {
-	const latest = findLatest('measures', {'device = ?': device}, 'takenAt DESC')
+	const latest = findLatestMeasure(device)
 	if (!latest) {
 		return null
 	}
 	return convertMeasure(latest)
+}
+
+export function findLatestMeasure(device) {
+	return findLatest('measures', {'device = ?': device}, 'takenAt DESC')
 }
 
 export function readLastMeasures(device, limit) {
@@ -65,21 +72,30 @@ export function readLastMeasures(device, limit) {
 
 function convertMeasure(record) {
 	return {
-		...record,
-		takenAt: convertDate(record.takenAt),
-		createdAt: convertDate(record.createdAt),
+		id: record.id,
+		device: record.device,
+		source: record.source,
+		takenAt: showDate(record.takenAt),
+		createdAt: showDate(record.createdAt),
 		measure: JSON.parse(record.measure),
 	}
 }
 
-function convertDate(date) {
+function showDate(date) {
+	if (!date) {
+		return null
+	}
+	return convertDate(date).toISOString()
+}
+
+export function convertDate(date) {
 	if (!date) {
 		return null
 	}
 	if (date.endsWith('Z')) {
-		return date
+		return new Date(date)
 	}
-	return new Date(date + 'Z').toISOString()
+	return new Date(date + 'Z')
 }
 
 export function storeConfig(config) {
@@ -91,11 +107,33 @@ export function storeConfig(config) {
 }
 
 export function readConfig(device) {
-	const latest = findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+	const latest = findLatestConfig(device)
 	if (!latest) {
 		return null
 	}
-	latest.config = JSON.parse(latest.config)
-	return latest
+	return convertConfig(latest)
+}
+
+export function findLatestConfig(device) {
+	return findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+}
+
+function convertConfig(record) {
+	return {
+		id: record.id,
+		device: record.device,
+		source: record.source,
+		createdAt: convertDate(record.createdAt),
+		config: JSON.parse(record.config),
+	}
+}
+
+export function addConfigSource() {
+	alterTable('configs', `source TEXT NOT NULL DEFAULT '-'`)
+}
+
+export function addSecrets() {
+	alterTable('measures', 'secret TEXT')
+	alterTable('configs', 'secret TEXT')
 }
 

@@ -1,31 +1,32 @@
 import {randomUUID} from 'crypto'
 import {
 	storeMeasure, storeConfig,
+	findLatestMeasure, findLatestConfig,
+	convertDate,
 } from '../db/device.js'
 import {maxDeviceLength, minDelayMs} from '../core/config.js'
 import {sendMeasure} from '../server/websocket.js'
 
-const latestMeasure = new Map()
-const latestConfig = new Map()
 let configuredMinDelayMs = minDelayMs
 
 
-export async function processMeasure(device, measure, takenAt, source) {
-	const message = buildMeasure(device, measure, takenAt, source)
+export async function processMeasure(measure) {
+	const message = buildMeasure(measure)
 	storeMeasure(message)
 	await sendMeasure({
 		...message,
-		takenAt: takenAt || new Date(),
+		takenAt: measure.takenAt || new Date(),
 	})
 }
 
-function buildMeasure(device, measure, takenAt, source) {
-	checkMeasure(device)
+function buildMeasure({device, measure, takenAt, secret, source}) {
+	checkLatest(device, secret, findLatestMeasure)
 	const message = {
 		id: randomUUID(),
 		device,
 		measure,
 		source,
+		secret,
 	}
 	if (takenAt) {
 		message.takenAt = takenAt
@@ -33,39 +34,41 @@ function buildMeasure(device, measure, takenAt, source) {
 	return message
 }
 
-function checkMeasure(device) {
-	checkLatest(device, latestMeasure)
-}
-
-function checkLatest(device, map) {
+function checkLatest(device, secret, findLatestRecord) {
 	if (!device) {
 		throw new Error('Missing device code')
 	}
 	if (device.length >= maxDeviceLength) {
 		throw new Error(`Device code too long, should be under ${maxDeviceLength} characters`)
 	}
+	const latest = findLatestRecord(device)
+	if (!latest) {
+		return
+	}
+	const latestMs = convertDate(latest.createdAt).getTime()
 	const nowMs = Date.now()
-	const latestMs = map.get(device)
 	const diffMs = nowMs - latestMs
 	if (nowMs - latestMs < configuredMinDelayMs) {
 		throw new Error(`Delay between writes ${diffMs} ms was too short; should be at least ${configuredMinDelayMs} ms`)
 	}
-	map.set(device, nowMs)
+	if (!latest.secret) {
+		return
+	}
+	if (secret != latest.secret) {
+		throw new Error(`Secrets don't match`)
+	}
 }
 
-export async function processConfig(device, config, source) {
-	checkConfig(device)
+export async function processConfig({device, source, secret, config}) {
+	checkLatest(device, secret, findLatestConfig)
 	const message = {
 		id: randomUUID(),
 		device,
-		config,
 		source,
+		secret,
+		config,
 	}
 	storeConfig(message)
-}
-
-function checkConfig(device) {
-	checkLatest(device, latestConfig)
 }
 
 export function setMinDelayMs(testMinDelayMs) {

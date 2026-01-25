@@ -65,8 +65,20 @@ server {
                 proxy_set_header X-Real-IP $remote_addr;
                 proxy_pass http://localhost:4215/;
         }
+
+        location /sync/ {
+                # websockets
+                proxy_pass http://localhost:4215/sync/;
+                proxy_http_version 1.1;
+                proxy_set_header Host $host;
+                proxy_set_header X-Real-IP $remote_addr;
+                proxy_set_header Upgrade $http_upgrade;
+                proxy_set_header Connection "upgrade";
+        }
 }
 ```
+
+Note that websockets are redirected within the `/sync/` directory.
 
 To create an HTTPS certificate just use
 [EFF's CertBot](https://certbot.eff.org/):

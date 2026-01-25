@@ -6,6 +6,8 @@ and store remote configurations.
 This should make it easier to access data from your devices,
 especially if you are using an ESP32 or similar platforms which include WiFi.
 
+Try it live on [avistel.es](https://avistel.es/).
+
 ## Documentation
 
 Please check out the [API documentation](docs/api.md),

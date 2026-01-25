@@ -23,8 +23,8 @@ async function postMeasure(request, reply) {
 	try {
 		const {device, ip} = readFromRequest(request)
 		request.log.info(`Received measure from ${ip} for device ${device}`)
-		const {takenAt, ...measure} = request.body
-		await processMeasure(device, measure, takenAt, `post ${ip}`)
+		const {takenAt, secret, ...measure} = request.body
+		await processMeasure({device, source: `post ${ip}`, takenAt, secret, measure})
 		return {ok: true}
 	} catch(error) {
 		request.log.warn(error.stack)
@@ -54,7 +54,8 @@ async function putConfig(request, reply) {
 	try {
 		const {device, ip} = readFromRequest(request)
 		request.log.info(`Received config from ${ip} for device ${device}`)
-		await processConfig(device, request.body, `post ${ip}`)
+		const {secret, ...config} = request.body
+		await processConfig({device, source: `post ${ip}`, secret, config})
 		return {ok: true}
 	} catch(error) {
 		// console.error(error.stack)
