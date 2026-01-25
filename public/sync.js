@@ -1,8 +1,10 @@
 
-
-checkDevice(window.location.href)
 let coolOffSeconds = 1
 const maxCoolOffSeconds = 300
+const maxRows = 15
+
+
+checkDevice(window.location.href)
 
 function checkDevice(href) {
 	const url = URL.parse(href)
@@ -60,7 +62,9 @@ function showMeasure(measure) {
 	}
 	const tbody = document.getElementsByClassName('tbody measure')[0]
 	tbody.prepend(row)
-	tbody.removeChild(tbody.children[tbody.children.length - 1])
+	if (tbody.children.length > maxRows) {
+		tbody.removeChild(tbody.children[tbody.children.length - 1])
+	}
 }
 
 function sleep(ms) {
