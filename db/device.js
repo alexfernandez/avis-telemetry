@@ -66,10 +66,20 @@ export function readLastMeasures(device, limit) {
 function convertMeasure(record) {
 	return {
 		...record,
-		takenAt: new Date(record.takenAt + 'Z').toISOString(),
-		createdAt: new Date(record.createdAt + 'Z').toISOString(),
+		takenAt: convertDate(record.takenAt),
+		createdAt: convertDate(record.createdAt),
 		measure: JSON.parse(record.measure),
 	}
+}
+
+function convertDate(date) {
+	if (!date) {
+		return null
+	}
+	if (date.endsWith('Z')) {
+		return date
+	}
+	return new Date(date + 'Z').toISOString()
 }
 
 export function storeConfig(config) {
