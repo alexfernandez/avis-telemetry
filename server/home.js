@@ -9,6 +9,7 @@ export default async function setup(app) {
 	app.get('/favicon.ico', await serveFile('public/favicon.png', 'image/png'))
 	app.get('/favicon.png', await serveFile('public/favicon.png', 'image/png'))
 	app.get('/logo.svg', await serveFile('public/logo.svg', 'image/svg+xml'))
+	app.get('/sync.js', await serveFile('public/sync.js', 'text/javascript'))
 }
 
 async function serveHome(request, reply) {

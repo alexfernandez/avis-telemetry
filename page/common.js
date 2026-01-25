@@ -9,6 +9,7 @@ export function createHead(title) {
 	<title>${title}</title>
 	<link rel="shortcut icon" href="/favicon.png">
 	<link rel="stylesheet" href="/main.css">
+	<script src="/sync.js"></script>
 </head>
 <body>
 `
