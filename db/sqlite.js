@@ -33,31 +33,34 @@ function generateInsert(table, keys) {
 
 export function findLatest(table, where, order) {
 	const select = getSelect(table, Object.keys(where), order)
-	const results = db.prepare(select).get(Object.values(where))
+	const values = [...Object.values(where), order]
+	const results = db.prepare(select).get(values)
 	return results
 }
 
 export function findLastRecords(table, where, order, limit) {
 	const select = getSelect(table, Object.keys(where), order, limit)
-	const results = db.prepare(select).all(Object.values(where))
+	const values = [...Object.values(where), order, limit]
+	const results = db.prepare(select).all(values)
 	return results
 }
 
 function getSelect(table, where, order, limit) {
-	const limitClause = order ? `ORDER BY ${order}` : ''
-	const orderClause = limit ? `LIMIT ${limit}` : ''
+	const limitClause = order ? `ORDER BY ?` : ''
+	const orderClause = limit ? `LIMIT ?` : ''
 	return `SELECT * FROM ${table} WHERE ${where.join(' AND ')} ${limitClause} ${orderClause}`
 }
 
 export function findGrouped(table, conditions, group, limit = 10) {
 	const where = Object.keys(conditions)
 	const select = getSelectGroup('measures', where, group, limit)
-	return db.prepare(select).all(Object.values(conditions))
+	const values = [...Object.values(conditions), group, limit]
+	return db.prepare(select).all(values)
 }
 
 function getSelectGroup(table, where, group, limit) {
-	const groupClause = group ? `GROUP BY ${group}` : ''
-	const limitClause = `ORDER BY total DESC LIMIT ${limit}`
+	const groupClause = group ? `GROUP BY ?` : ''
+	const limitClause = limit ? `ORDER BY total DESC LIMIT ?` : ''
 	return `SELECT ${group}, count(*) as total FROM ${table} WHERE ${where.join(' AND ')} ${groupClause} ${limitClause}`
 }
 
