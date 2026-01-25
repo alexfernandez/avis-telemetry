@@ -24,16 +24,14 @@ export class UdpServer {
 
 	receive(payload, info) {
 		this.logger.info(`Received ${payload.length} bytes from udp: ${info.address}:${info.port}`)
-		try {
-			this.process(payload, info.address)
-		} catch(error) {
-			this.logger.warn(`Could not process message`)
-		}
+		this.process(payload, info.address).then(() => {}).catch(error => {
+			this.logger.warn(`Could not process message: ${error}`)
+		})
 	}
 
-	process(payload, ip) {
+	async process(payload, ip) {
 		const {device, takenAt, secret, ...measure} = JSON.parse(payload)
-		processMeasure({device, source: `udp ${ip}`, takenAt, secret, measure})
+		await processMeasure({device, source: `udp ${ip}`, takenAt, secret, measure})
 	}
 
 	close() {
