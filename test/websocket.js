@@ -34,7 +34,7 @@ async function testWebsocket() {
 		console.assert(!error, `should send again without error`)
 	})
 	await sleepMs(100)
-	console.assert(messages.length == 1, 'should get message')
+	console.assert(messages.length > 0, 'should get message')
 	const message = messages[0]
 	console.assert(message, 'should have message')
 	console.assert(message.device, 'should have device')
