@@ -28,11 +28,7 @@ export async function sendMeasure(measure) {
 			continue
 		}
 		try {
-			const message = {
-				device,
-				measure,
-			}
-			listener.send(Buffer.from(JSON.stringify(message)))
+			listener.send(JSON.stringify(measure))
 		} catch(error) {
 			console.warn(error.stack)
 			listener.close()

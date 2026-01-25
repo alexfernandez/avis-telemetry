@@ -38,11 +38,10 @@ async function testWebsocket() {
 	const message = messages[0]
 	console.assert(message, 'should have message')
 	console.assert(message.device, 'should have device')
-	console.assert(message.measure, 'should have measure')
-	console.assert(message.measure.text == message.text, 'should have text value')
-	console.assert(message.measure.numeric == message.numeric, 'should have text value')
-	console.assert(typeof message.measure.source == 'string', 'should have string source')
-	console.assert(message.measure.source.startsWith('udp '), 'should have udp source')
+	console.assert(message.text == message.text, 'should have text value')
+	console.assert(message.numeric == message.numeric, 'should have text value')
+	console.assert(typeof message.source == 'string', 'should have string source')
+	console.assert(message.source.startsWith('udp '), 'should have udp source')
 	websocket1.terminate()
 	client.close()
 }

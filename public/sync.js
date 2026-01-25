@@ -19,7 +19,7 @@ function connectToSync(device, url) {
 	const socket = new WebSocket(destination)
 	socket.addEventListener('open', () => console.log(`Connected to server`))
 	socket.addEventListener('message', measure => {
-		console.log(`Message from server: ${measure}`)
+		console.log(`Message from server`, JSON.parse(measure.data))
 	})
 	socket.addEventListener('error', error => console.warn(`Websocket error:`, error))
 	socket.addEventListener('close', async() => {
