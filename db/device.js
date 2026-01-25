@@ -75,10 +75,17 @@ function convertMeasure(record) {
 		id: record.id,
 		device: record.device,
 		source: record.source,
-		takenAt: convertDate(record.takenAt),
-		createdAt: convertDate(record.createdAt),
+		takenAt: showDate(record.takenAt),
+		createdAt: showDate(record.createdAt),
 		measure: JSON.parse(record.measure),
 	}
+}
+
+function showDate(date) {
+	if (!date) {
+		return null
+	}
+	return convertDate(date).toISOString()
 }
 
 export function convertDate(date) {
