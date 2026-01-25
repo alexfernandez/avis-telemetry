@@ -1,12 +1,12 @@
 import {randomUUID} from 'crypto'
 import {
 	storeMeasure, storeConfig,
+	findLatestMeasure, findLatestConfig,
+	convertDate,
 } from '../db/device.js'
 import {maxDeviceLength, minDelayMs} from '../core/config.js'
 import {sendMeasure} from '../server/websocket.js'
 
-const latestMeasure = new Map()
-const latestConfig = new Map()
 let configuredMinDelayMs = minDelayMs
 
 
@@ -20,7 +20,7 @@ export async function processMeasure(measure) {
 }
 
 function buildMeasure({device, measure, takenAt, secret, source}) {
-	checkMeasure(device)
+	checkLatest(device, secret, findLatestMeasure)
 	const message = {
 		id: randomUUID(),
 		device,
@@ -34,28 +34,33 @@ function buildMeasure({device, measure, takenAt, secret, source}) {
 	return message
 }
 
-function checkMeasure(device) {
-	checkLatest(device, latestMeasure)
-}
-
-function checkLatest(device, map) {
+function checkLatest(device, secret, findLatestRecord) {
 	if (!device) {
 		throw new Error('Missing device code')
 	}
 	if (device.length >= maxDeviceLength) {
 		throw new Error(`Device code too long, should be under ${maxDeviceLength} characters`)
 	}
+	const latest = findLatestRecord(device)
+	if (!latest) {
+		return
+	}
+	const latestMs = convertDate(latest.createdAt).getTime()
 	const nowMs = Date.now()
-	const latestMs = map.get(device)
 	const diffMs = nowMs - latestMs
 	if (nowMs - latestMs < configuredMinDelayMs) {
 		throw new Error(`Delay between writes ${diffMs} ms was too short; should be at least ${configuredMinDelayMs} ms`)
 	}
-	map.set(device, nowMs)
+	if (!latest.secret) {
+		return
+	}
+	if (secret != latest.secret) {
+		throw new Error(`Secrets don't match`)
+	}
 }
 
 export async function processConfig({device, source, secret, config}) {
-	checkConfig(device, secret)
+	checkLatest(device, secret, findLatestConfig)
 	const message = {
 		id: randomUUID(),
 		device,
@@ -64,10 +69,6 @@ export async function processConfig({device, source, secret, config}) {
 		config,
 	}
 	storeConfig(message)
-}
-
-function checkConfig(device) {
-	checkLatest(device, latestConfig)
 }
 
 export function setMinDelayMs(testMinDelayMs) {

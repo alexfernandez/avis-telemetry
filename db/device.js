@@ -45,11 +45,15 @@ function serialize(measure) {
 }
 
 export function readLatestMeasure(device) {
-	const latest = findLatest('measures', {'device = ?': device}, 'takenAt DESC')
+	const latest = findLatestMeasure(device)
 	if (!latest) {
 		return null
 	}
 	return convertMeasure(latest)
+}
+
+export function findLatestMeasure(device) {
+	return findLatest('measures', {'device = ?': device}, 'takenAt DESC')
 }
 
 export function readLastMeasures(device, limit) {
@@ -77,14 +81,14 @@ function convertMeasure(record) {
 	}
 }
 
-function convertDate(date) {
+export function convertDate(date) {
 	if (!date) {
 		return null
 	}
 	if (date.endsWith('Z')) {
-		return date
+		return new Date(date)
 	}
-	return new Date(date + 'Z').toISOString()
+	return new Date(date + 'Z')
 }
 
 export function storeConfig(config) {
@@ -96,11 +100,15 @@ export function storeConfig(config) {
 }
 
 export function readConfig(device) {
-	const latest = findLatest('configs', {'device = ?': device}, 'createdAt DESC')
+	const latest = findLatestConfig(device)
 	if (!latest) {
 		return null
 	}
 	return convertConfig(latest)
+}
+
+export function findLatestConfig(device) {
+	return findLatest('configs', {'device = ?': device}, 'createdAt DESC')
 }
 
 function convertConfig(record) {

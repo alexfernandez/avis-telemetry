@@ -54,7 +54,7 @@ async function testMeasureWithSecret() {
 	await sleepMs(10)
 	const measure1 = {
 		text: 'value2',
-		secret: "the larch",
+		secret: "The larch",
 	}
 	const response1 = await app.inject({
 		url: `/devices/${secretDeviceId}/measures`,
