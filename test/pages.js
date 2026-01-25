@@ -5,7 +5,7 @@ async function testHomePage() {
 	const home = await testPage(`/`, 'Avis Telemetry')
 	const matches = home.matchAll(/<a.href="(\/[^"]+)"/g)
 	const urls = [...matches.map(match => match[1])]
-	console.assert(urls.length > 0, 'should match at least one URL')
+	console.assert(urls.length > 1, 'should match at least a couple of URLs')
 	for (const url of urls) {
 		await testPage(url, [
 			'for Device ',
