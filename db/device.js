@@ -25,9 +25,12 @@ function init() {
 	})
 }
 
-export function storeMeasure(message) {
-	message.measure = serialize(message.measure)
-	return insertRegister('measures', message)
+export function storeMeasure(measure) {
+	const serialized = {
+		...measure,
+		measure: serialize(measure.measure)
+	}
+	return insertRegister('measures', serialized)
 }
 
 function serialize(measure) {
@@ -65,8 +68,11 @@ export function readLastMeasures(device, limit) {
 }
 
 export function storeConfig(config) {
-	config.config = serialize(config.config)
-	return insertRegister('configs', config)
+	const serialized = {
+		...config,
+		config: serialize(config.config)
+	}
+	return insertRegister('configs', serialized)
 }
 
 export function readConfig(device) {
