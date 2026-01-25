@@ -24,6 +24,7 @@ function init() {
 		id: 'TEXT PRIMARY KEY',
 		device: 'TEXT NOT NULL',
 		config: 'JSON NOT NULL',
+		source: 'TEXT NOT NULL',
 		createdAt: "DATETIME NOT NULL DEFAULT(STRFTIME('%Y-%m-%d %H:%M:%f', 'NOW'))",
 	})
 }

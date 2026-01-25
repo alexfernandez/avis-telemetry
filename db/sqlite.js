@@ -16,6 +16,11 @@ export function createTable(table, fields) {
 	db.exec(createTable)
 }
 
+export function addConfigSource() {
+	const alterTable = `ALTER TABLE configs ADD COLUMN source TEXT NOT NULL DEFAULT '-'`
+	db.exec(alterTable)
+}
+
 export function insertRegister(table, message) {
 	const insert = generateInsert(table, Object.keys(message))
 	db.prepare(insert).run(message)
