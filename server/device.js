@@ -4,12 +4,14 @@ import {
 import {createDevicePage} from '../page/device.js'
 import {processMeasure, processConfig} from '../controller/device.js'
 
+const defaultLimit = 10
+
 
 export default async function setup(app) {
 	app.get('/show/:device', serveDevicePage)
 	app.post('/devices/:device/measures', postMeasure)
 	app.get('/devices/:device/measures/latest', getLatestMeasure)
-	app.get('/devices/:device/measures/last/:limit', getLastMeasures)
+	app.get('/devices/:device/measures', getLastMeasures)
 	app.put('/devices/:device/config', putConfig)
 	app.get('/devices/:device/config', getConfig)
 }
@@ -40,8 +42,9 @@ async function getLatestMeasure(request) {
 
 async function getLastMeasures(request, reply) {
 	try {
-		const {device, limit} = request.params
-		const intLimit = parseInt(limit)
+		const {device} = request.params
+		const {limit} = request.query
+		const intLimit = parseInt(limit) || defaultLimit
 		return readLastMeasures(device, intLimit)
 	} catch(error) {
 		// console.error(error.stack)

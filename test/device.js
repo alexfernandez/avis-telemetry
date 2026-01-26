@@ -293,7 +293,7 @@ async function testLastMeasures() {
 		console.assert(response1.json().ok, `should post measure ${index} ok`)
 	}
 	const response2 = await app.inject({
-		url: `/devices/${deviceId}/measures/last/${limit}`,
+		url: `/devices/${deviceId}/measures?limit=${limit}`,
 		method: 'GET',
 		headers: {'user-agent': userAgent},
 	})
@@ -307,7 +307,7 @@ async function testLastMeasures() {
 		console.assert(record.takenAt, 'should have takenAt')
 	}
 	const response3 = await app.inject({
-		url: `/devices/${deviceId}/measures/last/1000`,
+		url: `/devices/${deviceId}/measures?limit=1000`,
 		method: 'GET',
 		headers: {'user-agent': userAgent},
 	})
