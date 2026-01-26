@@ -42,6 +42,7 @@ export async function sendMeasure(measure) {
 	}
 	if (removed) {
 		listenersPerDevice.set(device, listenersPerDevice.get(device).map(listener => listener))
+		console.log(`Purged ${removed} websockets`)
 	}
 }
 
