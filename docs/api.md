@@ -31,7 +31,7 @@ which can be modified without notice.
 The API will reject measures where the `secret` does not match the previous value,
 to avoid spoofing.
 
-### Get latest measure: `GET devices/:device/measures/latest`
+### Get latest measure: `GET /devices/:device/measures/latest`
 
 Returns the latest measure as a JSON document.
 
@@ -50,14 +50,13 @@ Returns:
 **Note**:
 The API will not return the `secret` with the measure.
 
-### Get last n measures: `GET devices/:device/measures/last/:limit`
+### Get last n measures: `GET /devices/:device/measures`
 
-Returns the last `limit` measures as a JSON array.
-
+Returns the last 10 measures as a JSON array.
 Bash example:
 
 ```
-wget https://avistel.es/devices/api-test-device/measures/last/10
+wget https://avistel.es/devices/api-test-device/measures
 ```
 
 Returns:
@@ -66,7 +65,13 @@ Returns:
 [{"id":"f23849b8-ae00-47be-9cab-e747ee962947","device":"api-test-device","measure":{"value":85},"createdAt":"2025-06-16 18:03:59.013","takenAt":"2025-06-16 18:03:58.244","source":"post 192.158.5.3"}, ...]
 ```
 
-Or just browse [the device page](https://avistel.es/devices/api-test-device/measures/latest)
+Accepts an optional query parameter `?limit=n` to ask for the last `n` values:
+
+```
+wget https://avistel.es/devices/api-test-device/measures?limit=15
+```
+
+Or just browse [the device page](https://avistel.es/show/api-test-device)
 changing your device identifier instead of `api-test-device`.
 
 **Note**:
@@ -105,7 +110,7 @@ wget https://avistel.es/devices/api-test-device/config
 curl https://avistel.es/devices/api-test-device/config
 ```
 
-Or just browse [the device page](https://avistel.es/devices/api-test-device)
+Or just browse [the device page](https://avistel.es/show/api-test-device)
 changing your device identifier instead of `api-test-device`.
 
 **Note**:
