@@ -9,11 +9,22 @@ export async function setupWebsocket(app) {
 async function sync(socket, request) {
 	const device = request.params.device
 	// socket.on('message', message => console.log(`Received ${message}`))
-	request.log.info(`New listener for ${device} on ${request.ip}`)
 	if (!listenersPerDevice.has(device)) {
 		listenersPerDevice.set(device, [])
 	}
-	listenersPerDevice.get(device).push(socket)
+	const listeners = listenersPerDevice.get(device)
+	listeners.push(socket)
+	request.log.info(`New websocket for device ${device} on ${request.ip}, ${listeners.length} listeners`)
+	socket.on('close', () => removeSocket(socket, device, request.log))
+}
+
+function removeSocket(socket, device, log) {
+	const listeners = listenersPerDevice.get(device)
+	const index = listeners.indexOf(socket);
+	if (index != -1) {
+		listeners.splice(index, 1)
+	}
+	log.info(`Websocket removed from device ${device}, ${listeners.length} listeners`)
 }
 
 export async function sendMeasure(measure) {
@@ -23,8 +34,7 @@ export async function sendMeasure(measure) {
 	if (!listeners) {
 		return
 	}
-	let removed = 0
-	for (const listener of listeners) {
+	for (const listener of [...listeners]) {
 		if (!listener) {
 			continue
 		}
@@ -33,16 +43,7 @@ export async function sendMeasure(measure) {
 		} catch(error) {
 			console.warn(error.stack)
 			listener.close()
-			const index = listeners.indexOf(listener);
-			if (index != -1) {
-				listeners[index] = null
-				removed += 1
-			}
 		}
-	}
-	if (removed) {
-		listenersPerDevice.set(device, listenersPerDevice.get(device).map(listener => listener))
-		console.log(`Purged ${removed} websockets`)
 	}
 }
 
