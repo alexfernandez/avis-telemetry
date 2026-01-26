@@ -1,6 +1,7 @@
 
-let coolOffSeconds = 1
-const maxCoolOffSeconds = 300
+const initialCoolOffSeconds = 10
+const maxCoolOffSeconds = 600
+let coolOffSeconds = initialCoolOffSeconds
 const maxRows = 15
 
 
@@ -41,7 +42,7 @@ async function connectAndRetry(device, url) {
 	try {
 		await connectToSync(device, url)
 		console.log(`Syncing to device ${device}`)
-		coolOffSeconds = 1
+		coolOffSeconds = initialCoolOffSeconds
 	} catch(error) {
 		// will reconnect on its own
 		coolOffSeconds = Math.min(coolOffSeconds * 2, maxCoolOffSeconds)

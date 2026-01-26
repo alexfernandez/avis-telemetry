@@ -23,6 +23,7 @@ export async function sendMeasure(measure) {
 	if (!listeners) {
 		return
 	}
+	let removed = 0
 	for (const listener of listeners) {
 		if (!listener) {
 			continue
@@ -35,8 +36,12 @@ export async function sendMeasure(measure) {
 			const index = listeners.indexOf(listener);
 			if (index != -1) {
 				listeners[index] = null
+				removed += 1
 			}
 		}
+	}
+	if (removed) {
+		listenersPerDevice.set(device, listenersPerDevice.get(device).map(listener => listener))
 	}
 }
 
