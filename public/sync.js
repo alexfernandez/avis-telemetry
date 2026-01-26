@@ -31,7 +31,7 @@ function connectToSync(device, url) {
 			reject(error)
 		})
 		socket.addEventListener('close', async() => {
-			console.log(`Reconnecting in ${coolOffSeconds} seconds...`)
+			console.log(`Connection to server lost, reconnecting in ${coolOffSeconds} seconds...`)
 			await sleep(coolOffSeconds * 1000)
 			await connectAndRetry(device, url)
 		})
